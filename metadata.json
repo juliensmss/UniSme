@@ -1,0 +1,6 @@
+{
+  "name": "UniSme - Management & Supervision ISO 50001",
+  "description": "Plateforme industrielle UniSme combinant le management de l'énergie selon le cycle PDCA (ISO 50001:2018), la supervision temps réel multi-sources (IoT, OPC UA, MQTT, CSV) et l'analyse des facteurs pertinents.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
