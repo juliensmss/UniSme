@@ -10,7 +10,8 @@ import {
   Clock,
   Award,
   FileCheck2,
-  HelpCircle
+  HelpCircle,
+  Loader2
 } from 'lucide-react';
 
 interface CommercialModalProps {
@@ -36,6 +37,7 @@ export const CommercialModal: React.FC<CommercialModalProps> = ({
   const [situationNorme, setSituationNorme] = useState<string>('en_cours');
   const [message, setMessage] = useState('');
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
 
   if (!isOpen) return null;
@@ -73,14 +75,77 @@ export const CommercialModal: React.FC<CommercialModalProps> = ({
     }
   ];
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!nom.trim() || !prenom.trim() || !email.trim()) {
       setErrorMsg('Veuillez renseigner votre Nom, Prénom et Adresse email professionnelle.');
       return;
     }
     setErrorMsg('');
-    setIsSubmitted(true);
+    setIsSubmitting(true);
+
+    // Calcul du détail de formule pour le résumé d'e-mail
+    const detailFormule =
+      selectedModel === 'Solution SaaS'
+        ? formuleSaas === 'annuel'
+          ? 'Formule Annuelle (Engagement 12 mois - 2 mois offerts)'
+          : formuleSaas === 'mensuel'
+          ? 'Formule Mensuelle (Sans engagement)'
+          : 'Essai Gratuit 14 jours (Sans CB)'
+        : selectedModel === 'Conseil ISO 50001'
+        ? typeConseil === 'certification_initiale'
+          ? 'Certification Initiale (Structuration SMÉ)'
+          : typeConseil === 'audit_blanc'
+          ? 'Audit Blanc & Diagnostic de maturité'
+          : 'Optimisation & Maintien (Renouvellement)'
+        : typePartenariat === 'deploiement_clients'
+        ? 'Équiper mes clients industriels'
+        : 'Apport d’affaires & Recommandation';
+
+    const libelleSituationNorme =
+      situationNorme === 'en_cours'
+        ? 'Projet de certification en cours (< 12 mois)'
+        : situationNorme === 'deja_certifie'
+        ? 'Déjà certifié ISO 50001 (Optimisation & Digitalisation)'
+        : situationNorme === 'pas_de_demarche'
+        ? 'Pas de projet ISO 50001 (Supervision énergétique seule)'
+        : 'Cabinet de conseil / Auditeur externe';
+
+    try {
+      const response = await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json'
+        },
+        body: JSON.stringify({
+          access_key: 'd742ecac-6c3d-4878-9b71-cb775de4064d',
+          subject: `[UniSme] Nouvelle demande : ${selectedModel} - ${entreprise || `${prenom} ${nom}`}`,
+          from_name: `${prenom} ${nom}`,
+          nom: nom.trim(),
+          prenom: prenom.trim(),
+          email: email.trim(),
+          telephone: telephone.trim() || 'Non renseigné',
+          entreprise_ou_site: entreprise.trim() || 'Non renseigné',
+          modele_selectionne: selectedModel,
+          detail_formule_ou_besoin: detailFormule,
+          situation_iso_50001: libelleSituationNorme,
+          message_libre: message.trim() || 'Aucun message particulier'
+        })
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        setIsSubmitted(true);
+      } else {
+        setErrorMsg(result.message || 'Une erreur est survenue lors de l’envoi. Veuillez réessayer.');
+      }
+    } catch {
+      setErrorMsg('Impossible de contacter le service d’envoi. Vérifiez votre connexion internet.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleReset = () => {
@@ -566,16 +631,30 @@ export const CommercialModal: React.FC<CommercialModalProps> = ({
 
                   <button
                     type="submit"
-                    className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-700 text-white font-bold text-xs shadow-md hover:shadow-lg transition-all"
+                    disabled={isSubmitting}
+                    className={`inline-flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold text-xs shadow-md transition-all ${
+                      isSubmitting
+                        ? 'bg-emerald-700 text-emerald-100 cursor-not-allowed opacity-80'
+                        : 'bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-700 text-white hover:shadow-lg'
+                    }`}
                   >
-                    <Send className="w-3.5 h-3.5" />
-                    <span>
-                      {selectedModel === 'Solution SaaS'
-                        ? 'Demander les accès / Devis SaaS'
-                        : selectedModel === 'Conseil ISO 50001'
-                        ? 'Demander un accompagnement Conseil'
-                        : 'Déposer une demande Partenaire'}
-                    </span>
+                    {isSubmitting ? (
+                      <>
+                        <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                        <span>Transmission en cours...</span>
+                      </>
+                    ) : (
+                      <>
+                        <Send className="w-3.5 h-3.5" />
+                        <span>
+                          {selectedModel === 'Solution SaaS'
+                            ? 'Demander les accès / Devis SaaS'
+                            : selectedModel === 'Conseil ISO 50001'
+                            ? 'Demander un accompagnement Conseil'
+                            : 'Déposer une demande Partenaire'}
+                        </span>
+                      </>
+                    )}
                   </button>
                 </div>
               </div>
