@@ -8,8 +8,10 @@ import {
   Sparkles,
   ShieldCheck,
   X,
-  Network
+  Network,
+  Users
 } from 'lucide-react';
+import { UserRole } from '../types/energy';
 
 interface SidebarProps {
   currentPillar: 'sme' | 'supervision';
@@ -18,6 +20,7 @@ interface SidebarProps {
   onOpenNormeModal: () => void;
   onOpenCommercialModal: () => void;
   accessMode?: 'admin' | 'consultation';
+  userRole?: UserRole;
   activeAlertCount?: number;
   siteMode?: 'monosite' | 'multisite';
   selectedSiteName?: string;
@@ -34,6 +37,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
   onOpenNormeModal,
   onOpenCommercialModal,
   accessMode = 'admin',
+  userRole = 'admin',
   activeAlertCount = 0,
   siteMode = 'monosite',
   selectedSiteName = 'Usine Val-de-Loire (VDL-01)',
@@ -47,6 +51,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
   const isSupervisionView = currentPillar === 'supervision' && activeSection === 'supervision';
   const isAlertesView = currentPillar === 'supervision' && activeSection === 'alertes';
   const isConfigView = currentPillar === 'supervision' && ['cartographie', 'ingestion', 'raw_data', 'correlations'].includes(activeSection);
+  const isAccessManagementView = currentPillar === 'supervision' && activeSection === 'users';
 
   // Listes des IDs pour la sélection automatique
   const smeSubIds = ['intro', 'plan', 'do', 'check', 'act'];
@@ -335,6 +340,56 @@ export const Sidebar: React.FC<SidebarProps> = ({
             </button>
           )}
         </div>
+
+        {/* 5. GESTION DES ACCÈS & RÔLES (ADMIN SEULEMENT) */}
+        {userRole === 'admin' && (
+          <div>
+            {isCollapsed ? (
+              <button
+                onClick={() => handleSelect('supervision', 'users')}
+                title="Gestion des Accès & Rôles (Administration RBAC)"
+                className={`w-full h-9 rounded-lg flex items-center justify-center transition-all relative ${
+                  isAccessManagementView
+                    ? 'bg-slate-800 text-purple-400 border border-purple-500/30 shadow-xs'
+                    : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'
+                }`}
+              >
+                <Users className="w-5 h-5 shrink-0" />
+                {isAccessManagementView && (
+                  <span className="absolute left-0 top-2 bottom-2 w-0.5 bg-purple-400 rounded-r"></span>
+                )}
+              </button>
+            ) : (
+              <button
+                onClick={() => handleSelect('supervision', 'users')}
+                className={`w-full flex items-center justify-between px-2.5 py-2 rounded-lg text-xs font-semibold transition-all group ${
+                  isAccessManagementView
+                    ? 'bg-purple-950/60 text-white border border-purple-800/60 shadow-xs'
+                    : 'text-slate-300 hover:text-white hover:bg-slate-800/60'
+                }`}
+              >
+                <div className="flex items-center gap-2 min-w-0">
+                  <div className={`p-1 rounded-md shrink-0 transition-colors ${
+                    isAccessManagementView ? 'bg-purple-500/20 text-purple-400' : 'bg-slate-800 text-slate-400 group-hover:text-purple-400'
+                  }`}>
+                    <Users className="w-4 h-4" />
+                  </div>
+                  <div className="text-left truncate">
+                    <div className="truncate font-bold text-slate-100 flex items-center gap-1">
+                      <span>Gestion des Accès</span>
+                    </div>
+                    <div className="text-[10px] text-slate-400 font-normal truncate">Droits RBAC & Utilisateurs</div>
+                  </div>
+                </div>
+                <span className={`text-[10px] font-mono px-1.5 py-0.2 rounded shrink-0 ${
+                  isAccessManagementView ? 'bg-purple-500/20 text-purple-300 border border-purple-500/30 font-bold' : 'bg-slate-800 text-purple-400 border border-purple-900/60'
+                }`}>
+                  Admin
+                </span>
+              </button>
+            )}
+          </div>
+        )}
 
       </div>
 

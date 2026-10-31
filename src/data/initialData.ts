@@ -10,7 +10,8 @@ import {
   RACIItem,
   EnergyPolicy,
   CompetenceProofItem,
-  ThresholdAlertRule
+  ThresholdAlertRule,
+  UserAccountItem
 } from '../types/energy';
 
 export function generateInitialEnergyData(days: number = 45): EnergyDataPoint[] {
@@ -707,3 +708,79 @@ export const initialAlertRules: ThresholdAlertRule[] = [
     messageAction: "Vérifier l'extinction automatique des éclairages et la fermeture des portes des sas frigorifiques."
   }
 ];
+
+export const initialUsers: UserAccountItem[] = [
+  {
+    id: "usr-01",
+    nom: "Saliou",
+    prenom: "Julien",
+    email: "ju.saliou@gmail.com",
+    role: "admin",
+    fonction: "Directeur Technique & Référent SMÉ",
+    departement: "Direction Technique & SI",
+    dateAjout: "2024-01-15",
+    statut: "Actif",
+    derniereConnexion: "Aujourd'hui à 14:12"
+  },
+  {
+    id: "usr-02",
+    nom: "Thomas",
+    prenom: "Mathieu",
+    email: "m.thomas@valdeloire-industrie.fr",
+    role: "energy_manager",
+    fonction: "Ingénieur Efficacité Énergétique",
+    departement: "Service Énergie & Environnement",
+    dateAjout: "2024-02-01",
+    statut: "Actif",
+    derniereConnexion: "Aujourd'hui à 11:30"
+  },
+  {
+    id: "usr-03",
+    nom: "Berrada",
+    prenom: "Karim",
+    email: "k.berrada@valdeloire-industrie.fr",
+    role: "operator",
+    fonction: "Chef d'Équipe Maintenance Utilités",
+    departement: "Maintenance Usine",
+    dateAjout: "2024-03-10",
+    statut: "Actif",
+    derniereConnexion: "Hier à 16:45"
+  },
+  {
+    id: "usr-04",
+    nom: "Dupont",
+    prenom: "Claire",
+    email: "c.dupont@valdeloire-industrie.fr",
+    role: "operator",
+    fonction: "Conductrice Lignes & Chaufferie",
+    departement: "Production & Utilités",
+    dateAjout: "2024-03-18",
+    statut: "Actif",
+    derniereConnexion: "Hier à 08:20"
+  },
+  {
+    id: "usr-05",
+    nom: "Lemaire",
+    prenom: "Dr. Antoine",
+    email: "a.lemaire@afnor-certification.org",
+    role: "auditor",
+    fonction: "Auditeur Principal Tierce Partie ISO 50001",
+    departement: "Organisme Certificateur Tierce Partie",
+    dateAjout: "2024-04-05",
+    statut: "Actif",
+    derniereConnexion: "Il y a 3 jours"
+  },
+  {
+    id: "usr-06",
+    nom: "Bernard",
+    prenom: "Sophie",
+    email: "s.bernard@valdeloire-industrie.fr",
+    role: "auditor",
+    fonction: "Direction Générale & Responsable RSE",
+    departement: "Direction Générale",
+    dateAjout: "2024-04-12",
+    statut: "Actif",
+    derniereConnexion: "Il y a 5 jours"
+  }
+];
+

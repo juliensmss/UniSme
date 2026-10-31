@@ -168,3 +168,19 @@ export interface ActiveAlertEvent {
   acquittee: boolean;
   messageAction: string;
 }
+
+export type UserRole = 'admin' | 'energy_manager' | 'operator' | 'auditor';
+
+export interface UserAccountItem {
+  id: string;
+  nom: string;
+  prenom: string;
+  email: string;
+  role: UserRole;
+  fonction: string;
+  departement: string;
+  dateAjout: string;
+  statut: 'Actif' | 'Invité' | 'Suspendu';
+  derniereConnexion?: string;
+}
+

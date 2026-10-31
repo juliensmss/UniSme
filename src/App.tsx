@@ -7,6 +7,7 @@ import { RawDataSection } from './components/RawDataSection';
 import { CorrelationSection } from './components/CorrelationSection';
 import { ThresholdAlertsSection } from './components/ThresholdAlertsSection';
 import { MeterMappingSection } from './components/MeterMappingSection';
+import { UserAccessSection } from './components/UserAccessSection';
 import { CommercialModal } from './components/CommercialModal';
 import { ISOReferenceModal } from './components/ISOReferenceModal';
 
@@ -23,7 +24,8 @@ import {
   initialRACI,
   initialCompetences,
   initialSites,
-  initialAlertRules
+  initialAlertRules,
+  initialUsers
 } from './data/initialData';
 import {
   EnergyDataPoint,
@@ -32,7 +34,9 @@ import {
   RACIItem,
   CompetenceProofItem,
   ThresholdAlertRule,
-  NonConformiteItem
+  NonConformiteItem,
+  UserRole,
+  UserAccountItem
 } from './types/energy';
 import {
   Shield,
@@ -52,7 +56,11 @@ import {
   GitBranch,
   ShieldCheck,
   BarChart2,
-  BookOpen
+  BookOpen,
+  Zap,
+  Wrench,
+  Users,
+  Lock
 } from 'lucide-react';
 
 export default function App() {
@@ -64,8 +72,28 @@ export default function App() {
   // État du volet mobile (drawer)
   const [isMobileDrawerOpen, setIsMobileDrawerOpen] = useState<boolean>(false);
 
-  // Mode d'accès : Administrateur (droits complets) ou Consultation (lecture seule / audit)
-  const [accessMode, setAccessMode] = useState<'admin' | 'consultation'>('admin');
+  // Gestion des Profils Utilisateurs & Rôles RBAC (ISO 50001 §5.3)
+  const [users, setUsers] = useState<UserAccountItem[]>(initialUsers);
+  const [currentUser, setCurrentUser] = useState<UserAccountItem>(initialUsers[0]);
+
+  const userRole: UserRole = currentUser.role;
+  // Rétrocompatibilité pour les composants enfants existants
+  const accessMode: 'admin' | 'consultation' = (userRole === 'admin' || userRole === 'energy_manager') ? 'admin' : 'consultation';
+
+  const handleSelectRole = (newRole: UserRole) => {
+    const representative = users.find(u => u.role === newRole);
+    if (representative) {
+      setCurrentUser(representative);
+    } else {
+      setCurrentUser(prev => ({ ...prev, role: newRole }));
+    }
+    // Si l'utilisateur quitte le profil Admin alors qu'il consultait la gestion des accès, on le redirige
+    if (newRole !== 'admin' && activeSection === 'users') {
+      setCurrentPillar('sme');
+      setActiveSection('intro');
+    }
+    setIsUserMenuOpen(false);
+  };
 
   // Menu Profil & Rôle utilisateur (Option 1)
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
@@ -181,6 +209,7 @@ export default function App() {
         onOpenNormeModal={() => setIsNormeModalOpen(true)}
         onOpenCommercialModal={() => setIsCommercialModalOpen(true)}
         accessMode={accessMode}
+        userRole={userRole}
         activeAlertCount={activeAlertCount}
         siteMode="monosite"
         selectedSiteName={currentSiteName}
@@ -212,6 +241,8 @@ export default function App() {
               <span className="font-bold text-slate-900 truncate">
                 {currentPillar === 'sme'
                   ? 'SMÉ'
+                  : activeSection === 'users'
+                  ? 'Administration'
                   : activeSection === 'supervision'
                   ? 'Supervision Temps Réel'
                   : activeSection === 'alertes'
@@ -231,6 +262,7 @@ export default function App() {
                  activeSection === 'ingestion' ? 'Passerelle 4G & Ingestion IoT' :
                  activeSection === 'raw_data' ? 'Données Brutes Horodatées' :
                  activeSection === 'correlations' ? 'Facteurs Pertinents & Corrélations' :
+                 activeSection === 'users' ? 'Gestion des Accès & Rôles (RBAC)' :
                  activeSection.replace('_', ' ')}
               </span>
             </div>
@@ -268,28 +300,43 @@ export default function App() {
               )}
             </button>
 
-            {/* Menu Profil Utilisateur & Mode d'accès (Option 1) */}
+            {/* Menu Profil Utilisateur & Mode d'accès (Option 1 - 4 Rôles RBAC) */}
             <div className="relative" ref={userMenuRef}>
               <button
                 onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
-                className="flex items-center gap-2.5 pl-2 pr-3 py-1.5 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 transition-all text-xs focus:outline-none focus:ring-2 focus:ring-slate-400/20 shadow-2xs"
-                title="Gérer les droits d'accès et le profil utilisateur"
+                className="flex items-center gap-2 pl-2 pr-3 py-1.5 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 transition-all text-xs focus:outline-none focus:ring-2 focus:ring-slate-400/20 shadow-2xs"
+                title="Gérer les droits d'accès et changer de profil démo"
               >
                 {/* Avatar initiales */}
-                <div className="w-7 h-7 rounded-full bg-gradient-to-br from-slate-800 to-slate-900 text-white font-bold text-[11px] flex items-center justify-center shadow-2xs">
-                  JS
+                <div className={`w-7 h-7 rounded-full text-white font-bold text-[11px] flex items-center justify-center shadow-2xs ${
+                  userRole === 'admin' ? 'bg-gradient-to-br from-emerald-600 to-emerald-800' :
+                  userRole === 'energy_manager' ? 'bg-gradient-to-br from-blue-600 to-blue-800' :
+                  userRole === 'operator' ? 'bg-gradient-to-br from-amber-600 to-amber-800' :
+                  'bg-gradient-to-br from-indigo-600 to-indigo-800'
+                }`}>
+                  {currentUser.prenom[0]}{currentUser.nom[0]}
                 </div>
                 
                 {/* Identité & badge mode actuel */}
                 <div className="text-left hidden sm:block">
-                  <div className="font-semibold text-slate-800 leading-tight">Ju. Saliou</div>
-                  <div className="flex items-center gap-1 text-[10px] text-slate-500 leading-tight">
-                    {accessMode === 'admin' ? (
+                  <div className="font-semibold text-slate-800 leading-tight">
+                    {currentUser.prenom} {currentUser.nom}
+                  </div>
+                  <div className="flex items-center gap-1 text-[10px] leading-tight">
+                    {userRole === 'admin' ? (
                       <span className="inline-flex items-center gap-0.5 text-emerald-600 font-semibold">
                         <Shield className="w-2.5 h-2.5" /> Admin
                       </span>
-                    ) : (
+                    ) : userRole === 'energy_manager' ? (
+                      <span className="inline-flex items-center gap-0.5 text-blue-600 font-semibold">
+                        <Zap className="w-2.5 h-2.5" /> Équipe Énergie
+                      </span>
+                    ) : userRole === 'operator' ? (
                       <span className="inline-flex items-center gap-0.5 text-amber-600 font-semibold">
+                        <Wrench className="w-2.5 h-2.5" /> Opérateur
+                      </span>
+                    ) : (
+                      <span className="inline-flex items-center gap-0.5 text-indigo-600 font-semibold">
                         <Eye className="w-2.5 h-2.5" /> Consultation
                       </span>
                     )}
@@ -299,72 +346,119 @@ export default function App() {
                 <ChevronDown className={`w-3.5 h-3.5 text-slate-400 transition-transform duration-150 ${isUserMenuOpen ? 'rotate-180' : ''}`} />
               </button>
 
-              {/* Dropdown Menu */}
+              {/* Dropdown Menu avec les 4 Profils Utilisateurs Recommandés */}
               {isUserMenuOpen && (
-                <div className="absolute right-0 mt-2 w-72 bg-white rounded-xl shadow-xl border border-slate-200 py-2 z-50">
+                <div className="absolute right-0 mt-2 w-80 bg-white rounded-xl shadow-xl border border-slate-200 py-2 z-50">
                   {/* En-tête profil */}
                   <div className="px-3.5 py-2.5 border-b border-slate-100">
-                    <p className="text-xs font-bold text-slate-900">Julien Saliou</p>
-                    <p className="text-[11px] text-slate-500 truncate">referent.energie@valdeloire-industrie.fr</p>
-                    <div className="mt-2 inline-flex items-center px-2 py-0.5 rounded text-[10px] font-semibold bg-emerald-50 text-emerald-800 border border-emerald-200">
-                      Périmètre : Usine Val-de-Loire (VDL-01)
+                    <p className="text-xs font-bold text-slate-900">{currentUser.prenom} {currentUser.nom}</p>
+                    <p className="text-[11px] text-slate-500 truncate font-mono">{currentUser.email}</p>
+                    <div className="mt-2 flex items-center justify-between">
+                      <div className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-semibold bg-slate-100 text-slate-700 border border-slate-200">
+                        Usine Val-de-Loire (VDL-01)
+                      </div>
+                      <span className="text-[10px] text-purple-700 font-bold bg-purple-50 px-1.5 py-0.5 rounded border border-purple-200">
+                        Simulateur Démo
+                      </span>
                     </div>
                   </div>
 
                   {/* Section Rôle & Droits d'accès */}
                   <div className="p-2 space-y-1">
-                    <div className="px-2 py-1 text-[10px] font-bold uppercase tracking-wider text-slate-400">
-                      Rôle & Droits d'accès
+                    <div className="px-2 py-1 text-[10px] font-bold uppercase tracking-wider text-slate-400 flex items-center justify-between">
+                      <span>Profil & Droits d'accès (ISO §5.3)</span>
                     </div>
 
+                    {/* 1. Administrateur */}
                     <button
-                      onClick={() => {
-                        setAccessMode('admin');
-                        setIsUserMenuOpen(false);
-                      }}
+                      onClick={() => handleSelectRole('admin')}
                       className={`w-full flex items-center justify-between px-2.5 py-2 rounded-lg text-xs transition-colors ${
-                        accessMode === 'admin'
+                        userRole === 'admin'
                           ? 'bg-emerald-50 text-emerald-950 font-semibold'
                           : 'text-slate-700 hover:bg-slate-50'
                       }`}
                     >
-                      <div className="flex items-center gap-2.5">
+                      <div className="flex items-center gap-2.5 min-w-0">
                         <div className={`w-6 h-6 rounded-md flex items-center justify-center shrink-0 ${
-                          accessMode === 'admin' ? 'bg-emerald-600 text-white' : 'bg-slate-100 text-slate-500'
+                          userRole === 'admin' ? 'bg-emerald-600 text-white' : 'bg-slate-100 text-slate-500'
                         }`}>
                           <Shield className="w-3.5 h-3.5" />
                         </div>
-                        <div className="text-left">
-                          <div>Administrateur</div>
-                          <div className="text-[10px] text-slate-500 font-normal">Droits complets d'édition et paramétrage</div>
+                        <div className="text-left truncate">
+                          <div className="truncate font-bold text-slate-900">🛡️ 1. Administrateur</div>
+                          <div className="text-[10px] text-slate-500 font-normal truncate">Gestion des comptes, accès & paramétrage</div>
                         </div>
                       </div>
-                      {accessMode === 'admin' && <Check className="w-4 h-4 text-emerald-600 shrink-0" />}
+                      {userRole === 'admin' && <Check className="w-4 h-4 text-emerald-600 shrink-0 ml-1" />}
                     </button>
 
+                    {/* 2. Équipe Énergie */}
                     <button
-                      onClick={() => {
-                        setAccessMode('consultation');
-                        setIsUserMenuOpen(false);
-                      }}
+                      onClick={() => handleSelectRole('energy_manager')}
                       className={`w-full flex items-center justify-between px-2.5 py-2 rounded-lg text-xs transition-colors ${
-                        accessMode === 'consultation'
+                        userRole === 'energy_manager'
+                          ? 'bg-blue-50 text-blue-950 font-semibold'
+                          : 'text-slate-700 hover:bg-slate-50'
+                      }`}
+                    >
+                      <div className="flex items-center gap-2.5 min-w-0">
+                        <div className={`w-6 h-6 rounded-md flex items-center justify-center shrink-0 ${
+                          userRole === 'energy_manager' ? 'bg-blue-600 text-white' : 'bg-slate-100 text-slate-500'
+                        }`}>
+                          <Zap className="w-3.5 h-3.5" />
+                        </div>
+                        <div className="text-left truncate">
+                          <div className="truncate font-bold text-slate-900">⚡ 2. Équipe Énergie</div>
+                          <div className="text-[10px] text-slate-500 font-normal truncate">Pilotage SMÉ, UES, IPÉ/SER & plan d'actions</div>
+                        </div>
+                      </div>
+                      {userRole === 'energy_manager' && <Check className="w-4 h-4 text-blue-600 shrink-0 ml-1" />}
+                    </button>
+
+                    {/* 3. Opérateur Terrain */}
+                    <button
+                      onClick={() => handleSelectRole('operator')}
+                      className={`w-full flex items-center justify-between px-2.5 py-2 rounded-lg text-xs transition-colors ${
+                        userRole === 'operator'
                           ? 'bg-amber-50 text-amber-950 font-semibold'
                           : 'text-slate-700 hover:bg-slate-50'
                       }`}
                     >
-                      <div className="flex items-center gap-2.5">
+                      <div className="flex items-center gap-2.5 min-w-0">
                         <div className={`w-6 h-6 rounded-md flex items-center justify-center shrink-0 ${
-                          accessMode === 'consultation' ? 'bg-amber-600 text-white' : 'bg-slate-100 text-slate-500'
+                          userRole === 'operator' ? 'bg-amber-600 text-white' : 'bg-slate-100 text-slate-500'
+                        }`}>
+                          <Wrench className="w-3.5 h-3.5" />
+                        </div>
+                        <div className="text-left truncate">
+                          <div className="truncate font-bold text-slate-900">🔧 3. Opérateur / Terrain</div>
+                          <div className="text-[10px] text-slate-500 font-normal truncate">Surveillance continue & acquittement alertes</div>
+                        </div>
+                      </div>
+                      {userRole === 'operator' && <Check className="w-4 h-4 text-amber-600 shrink-0 ml-1" />}
+                    </button>
+
+                    {/* 4. Consultation / Auditeur */}
+                    <button
+                      onClick={() => handleSelectRole('auditor')}
+                      className={`w-full flex items-center justify-between px-2.5 py-2 rounded-lg text-xs transition-colors ${
+                        userRole === 'auditor'
+                          ? 'bg-indigo-50 text-indigo-950 font-semibold'
+                          : 'text-slate-700 hover:bg-slate-50'
+                      }`}
+                    >
+                      <div className="flex items-center gap-2.5 min-w-0">
+                        <div className={`w-6 h-6 rounded-md flex items-center justify-center shrink-0 ${
+                          userRole === 'auditor' ? 'bg-indigo-600 text-white' : 'bg-slate-100 text-slate-500'
                         }`}>
                           <Eye className="w-3.5 h-3.5" />
                         </div>
-                        <div className="text-left">
-                          <div>Consultation / Audit</div>
-                          <div className="text-[10px] text-slate-500 font-normal">Lecture seule et revue d'audit ISO 50001</div>
+                        <div className="text-left truncate">
+                          <div className="truncate font-bold text-slate-900">👁️ 4. Consultation / Audit</div>
+                          <div className="text-[10px] text-slate-500 font-normal truncate">Lecture seule & revue d'audit ISO 50001</div>
                         </div>
                       </div>
-                      {accessMode === 'consultation' && <Check className="w-4 h-4 text-amber-600 shrink-0" />}
+                      {userRole === 'auditor' && <Check className="w-4 h-4 text-indigo-600 shrink-0 ml-1" />}
                     </button>
                   </div>
                 </div>
@@ -498,18 +592,52 @@ export default function App() {
         {/* 3. Zone de Contenu Déroulante Verticalement (L'en-tête et la barre latérale restent figés) */}
         <main className="flex-1 overflow-y-auto p-3 sm:p-5 lg:p-7 max-w-7xl w-full mx-auto space-y-5 sm:space-y-6">
           
-          {/* Bannière informative si Mode Consultation */}
-          {accessMode === 'consultation' && (
-            <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 text-xs text-amber-900 flex items-center justify-between gap-3">
+          {/* Bannières informatives selon le Profil Rôle Actif */}
+          {userRole === 'energy_manager' && (
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 text-xs text-blue-900 flex items-center justify-between gap-3 shadow-2xs">
               <div className="flex items-center gap-2">
-                <Eye className="w-4 h-4 text-amber-700 shrink-0" />
+                <Zap className="w-4 h-4 text-blue-700 shrink-0" />
                 <span>
-                  <strong>Mode Consultation actif :</strong> Vous visualisez les tableaux, matrices et indicateurs en mode lecture seule (idéal pour auditeurs internes et revue de conformité ISO 50001).
+                  <strong>Profil Équipe Énergie actif :</strong> Droits complets sur le SMÉ, les UES et les plans d'actions (l'administration des accès est réservée au profil Admin).
                 </span>
               </div>
               <button
-                onClick={() => setAccessMode('admin')}
-                className="px-2.5 py-1 bg-amber-200 hover:bg-amber-300 rounded font-semibold text-amber-900 transition-colors shrink-0"
+                onClick={() => handleSelectRole('admin')}
+                className="px-2.5 py-1 bg-blue-100 hover:bg-blue-200 border border-blue-300 rounded font-semibold text-blue-900 transition-colors shrink-0"
+              >
+                Passer en mode Admin
+              </button>
+            </div>
+          )}
+
+          {userRole === 'operator' && (
+            <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 text-xs text-amber-900 flex items-center justify-between gap-3 shadow-2xs">
+              <div className="flex items-center gap-2">
+                <Wrench className="w-4 h-4 text-amber-700 shrink-0" />
+                <span>
+                  <strong>Profil Opérateur Terrain actif :</strong> Vue orientée monitoring temps réel et acquittement terrain des dérives d'énergie.
+                </span>
+              </div>
+              <button
+                onClick={() => handleSelectRole('admin')}
+                className="px-2.5 py-1 bg-amber-100 hover:bg-amber-200 border border-amber-300 rounded font-semibold text-amber-900 transition-colors shrink-0"
+              >
+                Passer en mode Admin
+              </button>
+            </div>
+          )}
+
+          {userRole === 'auditor' && (
+            <div className="bg-indigo-50 border border-indigo-200 rounded-lg p-3 text-xs text-indigo-900 flex items-center justify-between gap-3 shadow-2xs">
+              <div className="flex items-center gap-2">
+                <Eye className="w-4 h-4 text-indigo-700 shrink-0" />
+                <span>
+                  <strong>Profil Consultation / Auditeur ISO 50001 actif :</strong> Mode lecture seule et vérification des preuves d'audit. Les données et les seuils sont protégés contre toute modification.
+                </span>
+              </div>
+              <button
+                onClick={() => handleSelectRole('admin')}
+                className="px-2.5 py-1 bg-indigo-100 hover:bg-indigo-200 border border-indigo-300 rounded font-semibold text-indigo-900 transition-colors shrink-0"
               >
                 Passer en mode Admin
               </button>
@@ -575,6 +703,47 @@ export default function App() {
           {currentPillar === 'supervision' && activeSection === 'cartographie' && (
             <MeterMappingSection accessMode={accessMode} />
           )}
+
+          {/* PILIER 3 : GESTION DES ACCÈS & RÔLES (ADMIN DÉMO) */}
+          {currentPillar === 'supervision' && activeSection === 'users' && (
+            userRole === 'admin' ? (
+              <UserAccessSection
+                users={users}
+                setUsers={setUsers}
+                currentUserEmail={currentUser.email}
+                onSwitchUser={(user) => {
+                  setCurrentUser(user);
+                  if (user.role !== 'admin') {
+                    setCurrentPillar('sme');
+                    setActiveSection('intro');
+                  }
+                }}
+                currentRole={userRole}
+              />
+            ) : (
+              <div className="bg-white rounded-xl border border-slate-200 p-8 text-center max-w-lg mx-auto my-12 shadow-sm space-y-4">
+                <div className="w-12 h-12 rounded-full bg-rose-50 text-rose-600 flex items-center justify-center mx-auto">
+                  <Lock className="w-6 h-6" />
+                </div>
+                <h3 className="text-base font-bold text-slate-900">
+                  Accès Réservé au Profil Administrateur
+                </h3>
+                <p className="text-xs text-slate-500 leading-relaxed">
+                  Conformément à la politique de sécurité RBAC (ISO 50001 §5.3), la gestion des habilitations et l'attribution des droits par adresse e-mail sont strictement réservées au profil Administrateur.
+                </p>
+                <div className="pt-2">
+                  <button
+                    onClick={() => handleSelectRole('admin')}
+                    className="px-4 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold transition-colors inline-flex items-center gap-2 shadow-xs cursor-pointer"
+                  >
+                    <Shield className="w-3.5 h-3.5" />
+                    <span>Basculer sur le compte Administrateur</span>
+                  </button>
+                </div>
+              </div>
+            )
+          )}
+
 
         </main>
       </div>
