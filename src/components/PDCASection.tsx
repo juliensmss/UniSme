@@ -1105,37 +1105,15 @@ export const PDCASection: React.FC<PDCASectionProps> = ({
 
   return (
     <div className="space-y-6">
-      {/* En-tête avec sélecteur de phases */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-slate-200">
-        <div>
-          <h2 className="text-xl font-bold text-slate-900">
-            Système de Management de l'Énergie (ISO 50001:2018)
-          </h2>
-          <div className="flex items-center gap-2 text-xs text-slate-500 mt-1">
-            <span>Amélioration continue méthodique</span>
-            <span aria-hidden="true">·</span>
-            <span>Chapitres 4 à 10</span>
-          </div>
-        </div>
-
-        <div className="flex items-center p-1 bg-slate-100 rounded-lg overflow-x-auto no-scrollbar">
-          {(['intro', 'plan', 'do', 'check', 'act'] as const).map(pStep => (
-            <button
-              key={pStep}
-              onClick={() => setActiveStep(pStep)}
-              className={`px-3 py-1.5 text-xs font-semibold rounded-md whitespace-nowrap transition-colors ${
-                activeStep === pStep
-                  ? 'bg-white text-slate-900 shadow-xs'
-                  : 'text-slate-600 hover:text-slate-900'
-              }`}
-            >
-              {pStep === 'intro' && 'Comprendre le SMÉ'}
-              {pStep === 'plan' && '1. Plan (Planifier)'}
-              {pStep === 'do' && '2. Do (Réaliser)'}
-              {pStep === 'check' && '3. Check (Vérifier)'}
-              {pStep === 'act' && '4. Act (Agir)'}
-            </button>
-          ))}
+      {/* En-tête du SMÉ */}
+      <div className="pb-4 border-b border-slate-200">
+        <h2 className="text-xl font-bold text-slate-900">
+          Système de Management de l'Énergie (ISO 50001:2018)
+        </h2>
+        <div className="flex items-center gap-2 text-xs text-slate-500 mt-1">
+          <span>Amélioration continue méthodique</span>
+          <span aria-hidden="true">·</span>
+          <span>Chapitres 4 à 10</span>
         </div>
       </div>
 
