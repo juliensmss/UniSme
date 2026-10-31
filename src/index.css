@@ -1,1 +1,20 @@
 @import "tailwindcss";
+
+/* Désactivation universelle des flèches/boutons de scrollbars (Windows/Chrome/Edge) */
+*::-webkit-scrollbar-button {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+
+/* Classe utilitaire pour masquer proprement les scrollbars tout en permettant le défilement */
+.no-scrollbar::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none !important;
+  scrollbar-width: none !important;
+}

@@ -6,10 +6,7 @@ import {
   Bell,
   Building2,
   Sparkles,
-  ArrowRight,
   ShieldCheck,
-  PanelLeftClose,
-  PanelLeftOpen,
   X,
   Network
 } from 'lucide-react';
@@ -52,7 +49,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
   const isConfigView = currentPillar === 'supervision' && ['cartographie', 'ingestion', 'raw_data', 'correlations'].includes(activeSection);
 
   // Listes des IDs pour la sélection automatique
-  const smeSubIds = ['plan', 'do', 'check', 'act'];
+  const smeSubIds = ['intro', 'plan', 'do', 'check', 'act'];
   const configSubIds = ['cartographie', 'ingestion', 'raw_data', 'correlations'];
 
   const handleSelect = (pillar: 'sme' | 'supervision', sectionId: string) => {
@@ -64,57 +61,34 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
   const sidebarContent = (
     <div className={`flex flex-col h-full bg-slate-900 text-slate-300 select-none overflow-hidden transition-all duration-300 ease-in-out ${
-      isCollapsed ? 'w-16' : 'w-72'
+      isCollapsed ? 'w-16' : 'w-64'
     }`}>
       {/* Brand Header */}
       <div className={`border-b border-slate-800 flex items-center transition-all ${
-        isCollapsed ? 'p-2.5 justify-center flex-col gap-2' : 'p-3.5 sm:p-4 justify-between gap-2.5'
+        isCollapsed ? 'p-2.5 justify-center flex-col gap-2' : 'p-3 justify-between gap-2'
       }`}>
-        <div className={`flex items-center gap-3 min-w-0 flex-1 ${isCollapsed ? 'justify-center' : ''}`}>
+        <div className={`flex items-center gap-2.5 min-w-0 flex-1 ${isCollapsed ? 'justify-center' : ''}`}>
           <div
-            className="w-9 h-9 rounded-lg bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center text-emerald-400 shrink-0 shadow-xs cursor-pointer hover:bg-emerald-500/30 transition-colors"
+            className="w-8 h-8 rounded-lg bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center text-emerald-400 shrink-0 shadow-xs cursor-pointer hover:bg-emerald-500/30 transition-colors"
             title="UniSme — Management & Supervision de l'Énergie"
             onClick={onToggleCollapse}
           >
-            <Activity className="w-5 h-5" />
+            <Activity className="w-4 h-4" />
           </div>
 
           {!isCollapsed && (
             <div className="min-w-0 flex-1 pr-1">
-              <h1 className="text-sm font-bold text-white tracking-tight flex items-center gap-1.5 leading-snug">
+              <h1 className="text-sm font-bold text-white tracking-tight flex items-center gap-1.5 leading-tight">
                 <span>UniSme</span>
               </h1>
-              <p className="text-[11px] text-slate-300 leading-snug break-words whitespace-normal">
+              <p className="text-[10.5px] text-slate-300 leading-tight break-words whitespace-normal">
                 Management & Supervision de l'Énergie
               </p>
             </div>
           )}
         </div>
 
-        {/* Bouton Réduire / Agrandir (Desktop / Tablet) */}
-        {!isCollapsed && onToggleCollapse && (
-          <button
-            onClick={onToggleCollapse}
-            className="hidden md:flex p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors shrink-0"
-            title="Masquer le texte (mode icônes uniquement)"
-            aria-label="Réduire la barre latérale"
-          >
-            <PanelLeftClose className="w-4 h-4" />
-          </button>
-        )}
-
-        {isCollapsed && onToggleCollapse && (
-          <button
-            onClick={onToggleCollapse}
-            className="hidden md:flex p-1 rounded-md text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
-            title="Déplier la barre latérale"
-            aria-label="Agrandir la barre latérale"
-          >
-            <PanelLeftOpen className="w-4 h-4" />
-          </button>
-        )}
-
-        {/* Bouton Fermer sur Mobile Drawer */}
+        {/* Bouton Fermer sur Mobile Drawer uniquement (pas de flèche) */}
         {isMobileOpen && onCloseMobile && (
           <button
             onClick={onCloseMobile}
@@ -122,7 +96,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
             title="Fermer le menu"
             aria-label="Fermer le menu"
           >
-            <X className="w-5 h-5" />
+            <X className="w-4 h-4" />
           </button>
         )}
       </div>
@@ -158,22 +132,24 @@ export const Sidebar: React.FC<SidebarProps> = ({
       )}
 
       {/* Navigation Principale Épurée (4 Piliers Majeurs < 7 items) */}
-      <div className={`flex-1 overflow-y-auto ${isCollapsed ? 'p-1.5 space-y-2' : 'p-3 space-y-3'}`}>
+      <div className={`flex-1 overflow-y-auto no-scrollbar [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden ${
+        isCollapsed ? 'p-1.5 space-y-1.5' : 'p-2 space-y-1.5'
+      }`}>
         
         {/* En-tête de section discrète */}
         {!isCollapsed && (
-          <div className="px-2 pt-1 text-[10px] font-bold uppercase tracking-wider text-slate-400">
+          <div className="px-2 pt-0.5 text-[10px] font-bold uppercase tracking-wider text-slate-400">
             Navigation Principale
           </div>
         )}
 
-        {/* 1. SMÉ (CYCLE PDCA) */}
+        {/* 1. SMÉ (MANAGEMENT DE L'ÉNERGIE) */}
         <div>
           {isCollapsed ? (
             <button
-              onClick={() => handleSelect('sme', smeSubIds.includes(activeSection) ? activeSection : 'plan')}
-              title="SMÉ (Cycle PDCA : Plan, Do, Check, Act)"
-              className={`w-full h-10 rounded-lg flex items-center justify-center transition-all relative ${
+              onClick={() => handleSelect('sme', smeSubIds.includes(activeSection) ? activeSection : 'intro')}
+              title="SMÉ — Système de Management de l'Énergie"
+              className={`w-full h-9 rounded-lg flex items-center justify-center transition-all relative ${
                 isSmePillar
                   ? 'bg-slate-800 text-emerald-400 border border-emerald-500/30 shadow-xs'
                   : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'
@@ -186,28 +162,28 @@ export const Sidebar: React.FC<SidebarProps> = ({
             </button>
           ) : (
             <button
-              onClick={() => handleSelect('sme', smeSubIds.includes(activeSection) ? activeSection : 'plan')}
-              className={`w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-xs font-semibold transition-all group ${
+              onClick={() => handleSelect('sme', smeSubIds.includes(activeSection) ? activeSection : 'intro')}
+              className={`w-full flex items-center justify-between px-2.5 py-2 rounded-lg text-xs font-semibold transition-all group ${
                 isSmePillar
                   ? 'bg-emerald-950/60 text-white border border-emerald-800/60 shadow-xs'
                   : 'text-slate-300 hover:text-white hover:bg-slate-800/60'
               }`}
             >
-              <div className="flex items-center gap-2.5 min-w-0">
-                <div className={`p-1.5 rounded-md shrink-0 transition-colors ${
+              <div className="flex items-center gap-2 min-w-0">
+                <div className={`p-1 rounded-md shrink-0 transition-colors ${
                   isSmePillar ? 'bg-emerald-500/20 text-emerald-400' : 'bg-slate-800 text-slate-400 group-hover:text-emerald-400'
                 }`}>
                   <ShieldCheck className="w-4 h-4" />
                 </div>
                 <div className="text-left truncate">
-                  <div className="truncate font-bold text-slate-100">SMÉ (Cycle PDCA)</div>
-                  <div className="text-[10px] text-slate-400 font-normal truncate">Plan · Do · Check · Act</div>
+                  <div className="truncate font-bold text-slate-100">SMÉ</div>
+                  <div className="text-[10px] text-slate-400 font-normal truncate">Management</div>
                 </div>
               </div>
               <span className={`text-[10px] font-mono px-1.5 py-0.2 rounded shrink-0 ${
                 isSmePillar ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-bold' : 'bg-slate-800 text-slate-400'
               }`}>
-                PDCA
+                ISO 50001
               </span>
             </button>
           )}
@@ -233,14 +209,14 @@ export const Sidebar: React.FC<SidebarProps> = ({
           ) : (
             <button
               onClick={() => handleSelect('supervision', 'supervision')}
-              className={`w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-xs font-semibold transition-all group ${
+              className={`w-full flex items-center justify-between px-2.5 py-2 rounded-lg text-xs font-semibold transition-all group ${
                 isSupervisionView
                   ? 'bg-blue-950/60 text-white border border-blue-800/60 shadow-xs'
                   : 'text-slate-300 hover:text-white hover:bg-slate-800/60'
               }`}
             >
-              <div className="flex items-center gap-2.5 min-w-0">
-                <div className={`p-1.5 rounded-md shrink-0 transition-colors ${
+              <div className="flex items-center gap-2 min-w-0">
+                <div className={`p-1 rounded-md shrink-0 transition-colors ${
                   isSupervisionView ? 'bg-blue-500/20 text-blue-400' : 'bg-slate-800 text-slate-400 group-hover:text-blue-400'
                 }`}>
                   <BarChart2 className="w-4 h-4" />
@@ -265,7 +241,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
             <button
               onClick={() => handleSelect('supervision', 'alertes')}
               title={`Centre d'Alertes & Seuils (${activeAlertCount} active(s))`}
-              className={`w-full h-10 rounded-lg flex items-center justify-center transition-all relative ${
+              className={`w-full h-9 rounded-lg flex items-center justify-center transition-all relative ${
                 isAlertesView
                   ? 'bg-slate-800 text-amber-400 border border-amber-500/30 shadow-xs'
                   : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'
@@ -282,14 +258,14 @@ export const Sidebar: React.FC<SidebarProps> = ({
           ) : (
             <button
               onClick={() => handleSelect('supervision', 'alertes')}
-              className={`w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-xs font-semibold transition-all group ${
+              className={`w-full flex items-center justify-between px-2.5 py-2 rounded-lg text-xs font-semibold transition-all group ${
                 isAlertesView
                   ? 'bg-amber-950/60 text-white border border-amber-800/60 shadow-xs'
                   : 'text-slate-300 hover:text-white hover:bg-slate-800/60'
               }`}
             >
-              <div className="flex items-center gap-2.5 min-w-0">
-                <div className={`p-1.5 rounded-md shrink-0 transition-colors ${
+              <div className="flex items-center gap-2 min-w-0">
+                <div className={`p-1 rounded-md shrink-0 transition-colors ${
                   activeAlertCount > 0
                     ? 'bg-rose-500/20 text-rose-400 animate-pulse'
                     : isAlertesView ? 'bg-amber-500/20 text-amber-400' : 'bg-slate-800 text-slate-400 group-hover:text-amber-400'
@@ -318,7 +294,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
             <button
               onClick={() => handleSelect('supervision', configSubIds.includes(activeSection) ? activeSection : 'cartographie')}
               title="Configuration & Réseau (Cartographie, Passerelle, Données, Corrélations)"
-              className={`w-full h-10 rounded-lg flex items-center justify-center transition-all relative ${
+              className={`w-full h-9 rounded-lg flex items-center justify-center transition-all relative ${
                 isConfigView
                   ? 'bg-slate-800 text-indigo-400 border border-indigo-500/30 shadow-xs'
                   : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'
@@ -332,14 +308,14 @@ export const Sidebar: React.FC<SidebarProps> = ({
           ) : (
             <button
               onClick={() => handleSelect('supervision', configSubIds.includes(activeSection) ? activeSection : 'cartographie')}
-              className={`w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-xs font-semibold transition-all group ${
+              className={`w-full flex items-center justify-between px-2.5 py-2 rounded-lg text-xs font-semibold transition-all group ${
                 isConfigView
                   ? 'bg-indigo-950/60 text-white border border-indigo-800/60 shadow-xs'
                   : 'text-slate-300 hover:text-white hover:bg-slate-800/60'
               }`}
             >
-              <div className="flex items-center gap-2.5 min-w-0">
-                <div className={`p-1.5 rounded-md shrink-0 transition-colors ${
+              <div className="flex items-center gap-2 min-w-0">
+                <div className={`p-1 rounded-md shrink-0 transition-colors ${
                   isConfigView ? 'bg-indigo-500/20 text-indigo-400' : 'bg-slate-800 text-slate-400 group-hover:text-indigo-400'
                 }`}>
                   <Network className="w-4 h-4" />
@@ -364,24 +340,24 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
       {/* Footer Actions & Outils Techniques (Norme + Déploiement B2B) */}
       <div className={`border-t border-slate-800 bg-slate-950/70 transition-all ${
-        isCollapsed ? 'p-2 space-y-2' : 'p-3 space-y-2.5'
+        isCollapsed ? 'p-1.5 space-y-1.5' : 'p-2 space-y-1.5'
       }`}>
         <button
           onClick={onOpenNormeModal}
           title="Référentiel NF EN ISO 50001:2018"
           className={`w-full flex items-center rounded text-xs font-medium text-slate-300 hover:text-white hover:bg-slate-800/80 transition-colors ${
-            isCollapsed ? 'justify-center p-2.5 h-10' : 'gap-2 px-3 py-2'
+            isCollapsed ? 'justify-center p-2 h-9' : 'gap-2 px-2.5 py-1.5'
           }`}
         >
-          <BookOpen className="w-4 h-4 text-slate-400 shrink-0" />
+          <BookOpen className="w-3.5 h-3.5 text-slate-400 shrink-0" />
           {!isCollapsed && <span>Référentiel ISO 50001</span>}
         </button>
 
-        <div className={`border-t border-slate-800/80 ${isCollapsed ? 'pt-1.5' : 'pt-2 space-y-2'}`}>
+        <div className={`border-t border-slate-800/80 ${isCollapsed ? 'pt-1' : 'pt-1.5 space-y-1.5'}`}>
           {!isCollapsed && (
-            <div className="px-1 text-[10px] font-bold uppercase tracking-wider text-slate-400 flex items-center justify-between">
+            <div className="px-1 text-[9.5px] font-bold uppercase tracking-wider text-slate-400 flex items-center justify-between">
               <span>Déploiement & Offres</span>
-              <span className="font-semibold text-emerald-400 text-[10px] bg-emerald-950/70 border border-emerald-800/60 px-1.5 py-0.2 rounded">
+              <span className="font-semibold text-emerald-400 text-[9.5px] bg-emerald-950/70 border border-emerald-800/60 px-1.5 py-0.2 rounded">
                 B2B
               </span>
             </div>
@@ -390,13 +366,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
           <button
             onClick={onOpenCommercialModal}
             className={`w-full flex items-center rounded-lg bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-700 text-white font-bold transition-all shadow-md group ${
-              isCollapsed ? 'justify-center p-2.5 h-10' : 'justify-center gap-2 px-3 py-2.5 text-xs'
+              isCollapsed ? 'justify-center p-2 h-9' : 'justify-center gap-2 px-3 py-2 text-xs'
             }`}
             title="Déployer UniSme : Solution SaaS, Conseil ISO 50001 ou Partenariat"
           >
             <Sparkles className="w-3.5 h-3.5 text-emerald-200 group-hover:rotate-12 transition-transform shrink-0" />
             {!isCollapsed && <span>Déployer la Solution</span>}
-            {!isCollapsed && <ArrowRight className="w-3.5 h-3.5 text-emerald-200 group-hover:translate-x-0.5 transition-transform shrink-0" />}
           </button>
         </div>
       </div>
@@ -421,7 +396,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
           />
 
           {/* Drawer Panel */}
-          <div className="relative z-50 w-72 max-w-[85vw] h-full shadow-2xl animate-in slide-in-from-left duration-250">
+          <div className="relative z-50 w-64 max-w-[85vw] h-full shadow-2xl animate-in slide-in-from-left duration-250">
             {sidebarContent}
           </div>
         </div>

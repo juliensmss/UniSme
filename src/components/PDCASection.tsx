@@ -23,6 +23,7 @@ import {
   User,
   Target,
   Shield,
+  ShieldCheck,
   Layers,
   FileText,
   ArrowRight,
@@ -88,8 +89,8 @@ interface PDCASectionProps {
   setRaciItems?: React.Dispatch<React.SetStateAction<RACIItem[]>>;
   competences?: CompetenceProofItem[];
   setCompetences?: React.Dispatch<React.SetStateAction<CompetenceProofItem[]>>;
-  step?: 'plan' | 'do' | 'check' | 'act';
-  onStepChange?: (step: 'plan' | 'do' | 'check' | 'act') => void;
+  step?: 'intro' | 'plan' | 'do' | 'check' | 'act';
+  onStepChange?: (step: 'intro' | 'plan' | 'do' | 'check' | 'act') => void;
   onRequestCreateActionFromRisk?: (riskTitle: string, riskId: string) => void;
   accessMode?: 'admin' | 'consultation';
   onNavigateToSupervision?: () => void;
@@ -114,16 +115,16 @@ export const PDCASection: React.FC<PDCASectionProps> = ({
   setRaciItems: externalSetRaci,
   competences: externalCompetences,
   setCompetences: externalSetCompetences,
-  step = 'plan',
+  step = 'intro',
   onStepChange,
   onRequestCreateActionFromRisk,
   accessMode = 'admin',
   onNavigateToSupervision,
   onNavigateToCartographie
 }) => {
-  const [internalStep, setInternalStep] = useState<'plan' | 'do' | 'check' | 'act'>(step);
+  const [internalStep, setInternalStep] = useState<'intro' | 'plan' | 'do' | 'check' | 'act'>(step);
   const activeStep = step || internalStep;
-  const setActiveStep = (newStep: 'plan' | 'do' | 'check' | 'act') => {
+  const setActiveStep = (newStep: 'intro' | 'plan' | 'do' | 'check' | 'act') => {
     setInternalStep(newStep);
     if (onStepChange) onStepChange(newStep);
   };
@@ -1104,11 +1105,11 @@ export const PDCASection: React.FC<PDCASectionProps> = ({
 
   return (
     <div className="space-y-6">
-      {/* En-tête avec sélecteur de phases PDCA */}
+      {/* En-tête avec sélecteur de phases */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-slate-200">
         <div>
           <h2 className="text-xl font-bold text-slate-900">
-            Digitalisation du SMÉ — Cycle PDCA (ISO 50001:2018)
+            Système de Management de l'Énergie (ISO 50001:2018)
           </h2>
           <div className="flex items-center gap-2 text-xs text-slate-500 mt-1">
             <span>Amélioration continue méthodique</span>
@@ -1117,17 +1118,18 @@ export const PDCASection: React.FC<PDCASectionProps> = ({
           </div>
         </div>
 
-        <div className="flex items-center p-1 bg-slate-100 rounded-lg">
-          {(['plan', 'do', 'check', 'act'] as const).map(pStep => (
+        <div className="flex items-center p-1 bg-slate-100 rounded-lg overflow-x-auto no-scrollbar">
+          {(['intro', 'plan', 'do', 'check', 'act'] as const).map(pStep => (
             <button
               key={pStep}
               onClick={() => setActiveStep(pStep)}
-              className={`px-3.5 py-1.5 text-xs font-semibold rounded-md whitespace-nowrap transition-colors ${
+              className={`px-3 py-1.5 text-xs font-semibold rounded-md whitespace-nowrap transition-colors ${
                 activeStep === pStep
                   ? 'bg-white text-slate-900 shadow-xs'
                   : 'text-slate-600 hover:text-slate-900'
               }`}
             >
+              {pStep === 'intro' && 'Comprendre le SMÉ'}
               {pStep === 'plan' && '1. Plan (Planifier)'}
               {pStep === 'do' && '2. Do (Réaliser)'}
               {pStep === 'check' && '3. Check (Vérifier)'}
@@ -1136,6 +1138,336 @@ export const PDCASection: React.FC<PDCASectionProps> = ({
           ))}
         </div>
       </div>
+
+      {/* =========================================================================
+          ONGLET INTRODUCTION : FONCTIONNEMENT DU SMÉ & DÉMARCHE PDCA ISO 50001
+         ========================================================================= */}
+      {activeStep === 'intro' && (
+        <div className="space-y-6">
+          {/* Bannière de présentation générale */}
+          <div className="bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 text-white rounded-2xl p-6 sm:p-7 border border-slate-800 shadow-md space-y-3.5">
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full text-xs font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
+                <span>Norme NF EN ISO 50001:2018</span>
+              </span>
+              <span className="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full text-xs font-semibold bg-blue-500/20 text-blue-300 border border-blue-500/30">
+                <span>Cycle d'Amélioration Continue</span>
+              </span>
+              <span className="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full text-xs font-semibold bg-purple-500/20 text-purple-300 border border-purple-500/30">
+                <span>Chapitres 4 à 10</span>
+              </span>
+            </div>
+
+            <div className="space-y-2 max-w-4xl">
+              <h3 className="text-xl sm:text-2xl font-bold text-white tracking-tight">
+                Comprendre le fonctionnement du SMÉ et sa structure PDCA
+              </h3>
+              <p className="text-sm text-slate-300 leading-relaxed">
+                Le <strong>Système de Management de l’Énergie (SMÉ)</strong> est une démarche d'organisation et de progrès continu permettant à un établissement industriel de maîtriser ses consommations et de réduire durablement sa facture énergétique ainsi que son empreinte carbone.
+              </p>
+              <p className="text-xs text-slate-400 leading-relaxed">
+                UniSme digitalise rigoureusement l'ensemble des exigences de la norme <strong>ISO 50001:2018</strong>. La méthode s'articule autour des 4 étapes du cycle vertueux <strong>PDCA (Planifier, Réaliser, Vérifier, Agir)</strong>, où chaque étape alimente la suivante pour garantir une performance mesurable et auditable.
+              </p>
+            </div>
+          </div>
+
+          {/* Grille des 4 Piliers PDCA dans la norme */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            
+            {/* 1. PLAN */}
+            <div className="bg-white border border-slate-200 rounded-xl p-5 hover:border-emerald-300 transition-all shadow-xs flex flex-col justify-between space-y-4">
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-9 h-9 rounded-lg bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold text-sm shadow-xs">
+                      P
+                    </div>
+                    <div>
+                      <h4 className="text-sm font-bold text-slate-900">1. PLAN — Planifier</h4>
+                      <p className="text-[11px] text-emerald-700 font-semibold">Chapitres 4, 5 et 6 de l'ISO 50001</p>
+                    </div>
+                  </div>
+                  <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 font-bold">
+                    §4 - §6
+                  </span>
+                </div>
+
+                <p className="text-xs text-slate-600 leading-relaxed">
+                  Cadrer le système, mobiliser la gouvernance et identifier précisément où et comment l'énergie est consommée dans l'usine.
+                </p>
+
+                <div className="bg-slate-50 rounded-lg p-3 space-y-1.5 text-xs border border-slate-100">
+                  <div className="font-semibold text-slate-800 text-[11px] uppercase tracking-wider">
+                    Exigences normatives digitalisées :
+                  </div>
+                  <ul className="space-y-1 text-slate-600 text-[11px]">
+                    <li className="flex items-start gap-1.5">
+                      <span className="text-emerald-600 font-bold">·</span>
+                      <span><strong>§4 Contexte :</strong> Périmètre physique, domaine d'application et analyse SWOT des risques/opportunités.</span>
+                    </li>
+                    <li className="flex items-start gap-1.5">
+                      <span className="text-emerald-600 font-bold">·</span>
+                      <span><strong>§5 Leadership :</strong> Politique énergétique formelle, engagement de la direction et cibles de réduction.</span>
+                    </li>
+                    <li className="flex items-start gap-1.5">
+                      <span className="text-emerald-600 font-bold">·</span>
+                      <span><strong>§6 Planification :</strong> Revue énergétique (§6.3), Usages Énergétiques Significatifs (UES), Indicateurs IPÉ (§6.4), et Situations Énergétiques de Référence SER (§6.5).</span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+
+              <button
+                onClick={() => setActiveStep('plan')}
+                className="w-full inline-flex items-center justify-center gap-2 py-2 px-3 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 text-xs font-semibold transition-colors"
+              >
+                <span>Accéder à la phase 1 : Plan (Planifier)</span>
+                <ArrowRight className="w-3.5 h-3.5 text-emerald-700" />
+              </button>
+            </div>
+
+            {/* 2. DO */}
+            <div className="bg-white border border-slate-200 rounded-xl p-5 hover:border-blue-300 transition-all shadow-xs flex flex-col justify-between space-y-4">
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-9 h-9 rounded-lg bg-blue-100 text-blue-700 flex items-center justify-center font-bold text-sm shadow-xs">
+                      D
+                    </div>
+                    <div>
+                      <h4 className="text-sm font-bold text-slate-900">2. DO — Réaliser</h4>
+                      <p className="text-[11px] text-blue-700 font-semibold">Chapitres 7 et 8 de l'ISO 50001</p>
+                    </div>
+                  </div>
+                  <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-blue-50 text-blue-800 border border-blue-200 font-bold">
+                    §7 - §8
+                  </span>
+                </div>
+
+                <p className="text-xs text-slate-600 leading-relaxed">
+                  Engager les équipes opérationnelles, exécuter les actions d'économies d'énergie et sécuriser les pratiques d'exploitation et d'achats.
+                </p>
+
+                <div className="bg-slate-50 rounded-lg p-3 space-y-1.5 text-xs border border-slate-100">
+                  <div className="font-semibold text-slate-800 text-[11px] uppercase tracking-wider">
+                    Exigences normatives digitalisées :
+                  </div>
+                  <ul className="space-y-1 text-slate-600 text-[11px]">
+                    <li className="flex items-start gap-1.5">
+                      <span className="text-blue-600 font-bold">·</span>
+                      <span><strong>§5.3 & §7.2 Rôles & Compétences :</strong> Matrice RACI, registre des preuves de compétences et habilitations clés.</span>
+                    </li>
+                    <li className="flex items-start gap-1.5">
+                      <span className="text-blue-600 font-bold">·</span>
+                      <span><strong>§6.2 Plan d'actions opérationnel :</strong> Portefeuille des projets d'efficacité (gains kWh, budgets, échéances).</span>
+                    </li>
+                    <li className="flex items-start gap-1.5">
+                      <span className="text-blue-600 font-bold">·</span>
+                      <span><strong>§8.1 à §8.3 Maîtrise & Achats :</strong> Consignes d'exploitation des UES, intégration de l'énergie dans les achats et la conception.</span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+
+              <button
+                onClick={() => setActiveStep('do')}
+                className="w-full inline-flex items-center justify-center gap-2 py-2 px-3 rounded-lg bg-blue-50 hover:bg-blue-100 text-blue-800 border border-blue-200 text-xs font-semibold transition-colors"
+              >
+                <span>Accéder à la phase 2 : Do (Réaliser)</span>
+                <ArrowRight className="w-3.5 h-3.5 text-blue-700" />
+              </button>
+            </div>
+
+            {/* 3. CHECK */}
+            <div className="bg-white border border-slate-200 rounded-xl p-5 hover:border-purple-300 transition-all shadow-xs flex flex-col justify-between space-y-4">
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-9 h-9 rounded-lg bg-purple-100 text-purple-700 flex items-center justify-center font-bold text-sm shadow-xs">
+                      C
+                    </div>
+                    <div>
+                      <h4 className="text-sm font-bold text-slate-900">3. CHECK — Vérifier</h4>
+                      <p className="text-[11px] text-purple-700 font-semibold">Chapitre 9 de l'ISO 50001</p>
+                    </div>
+                  </div>
+                  <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-purple-50 text-purple-800 border border-purple-200 font-bold">
+                    §9
+                  </span>
+                </div>
+
+                <p className="text-xs text-slate-600 leading-relaxed">
+                  Mesurer les résultats réels, confronter la performance énergétique aux références et auditer la conformité du système.
+                </p>
+
+                <div className="bg-slate-50 rounded-lg p-3 space-y-1.5 text-xs border border-slate-100">
+                  <div className="font-semibold text-slate-800 text-[11px] uppercase tracking-wider">
+                    Exigences normatives digitalisées :
+                  </div>
+                  <ul className="space-y-1 text-slate-600 text-[11px]">
+                    <li className="flex items-start gap-1.5">
+                      <span className="text-purple-600 font-bold">·</span>
+                      <span><strong>§9.1 Surveillance continue :</strong> Mesurage et suivi en continu des IPÉ vs SER (calcul des gains réels en kWh).</span>
+                    </li>
+                    <li className="flex items-start gap-1.5">
+                      <span className="text-purple-600 font-bold">·</span>
+                      <span><strong>§9.1.2 Conformité légale :</strong> Veille et évaluation du respect des exigences légales et contractuelles.</span>
+                    </li>
+                    <li className="flex items-start gap-1.5">
+                      <span className="text-purple-600 font-bold">·</span>
+                      <span><strong>§9.2 & §9.3 Audits & Revue :</strong> Audits internes périodiques et préparation formelle de la Revue de Direction.</span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+
+              <button
+                onClick={() => setActiveStep('check')}
+                className="w-full inline-flex items-center justify-center gap-2 py-2 px-3 rounded-lg bg-purple-50 hover:bg-purple-100 text-purple-800 border border-purple-200 text-xs font-semibold transition-colors"
+              >
+                <span>Accéder à la phase 3 : Check (Vérifier)</span>
+                <ArrowRight className="w-3.5 h-3.5 text-purple-700" />
+              </button>
+            </div>
+
+            {/* 4. ACT */}
+            <div className="bg-white border border-slate-200 rounded-xl p-5 hover:border-amber-300 transition-all shadow-xs flex flex-col justify-between space-y-4">
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-9 h-9 rounded-lg bg-amber-100 text-amber-700 flex items-center justify-center font-bold text-sm shadow-xs">
+                      A
+                    </div>
+                    <div>
+                      <h4 className="text-sm font-bold text-slate-900">4. ACT — Agir</h4>
+                      <p className="text-[11px] text-amber-700 font-semibold">Chapitre 10 de l'ISO 50001</p>
+                    </div>
+                  </div>
+                  <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-amber-50 text-amber-800 border border-amber-200 font-bold">
+                    §10
+                  </span>
+                </div>
+
+                <p className="text-xs text-slate-600 leading-relaxed">
+                  Traiter sans délai les dérives mesurées, éliminer les causes profondes et pérenniser les gains pour le cycle suivant.
+                </p>
+
+                <div className="bg-slate-50 rounded-lg p-3 space-y-1.5 text-xs border border-slate-100">
+                  <div className="font-semibold text-slate-800 text-[11px] uppercase tracking-wider">
+                    Exigences normatives digitalisées :
+                  </div>
+                  <ul className="space-y-1 text-slate-600 text-[11px]">
+                    <li className="flex items-start gap-1.5">
+                      <span className="text-amber-600 font-bold">·</span>
+                      <span><strong>§10.1 Non-conformités :</strong> Registre des dérives détectées (alertes de surconsommation ou écarts d'audits).</span>
+                    </li>
+                    <li className="flex items-start gap-1.5">
+                      <span className="text-amber-600 font-bold">·</span>
+                      <span><strong>§10.1 Actions correctives :</strong> Recherche de cause racine et mise en œuvre d'actions curatives ciblées.</span>
+                    </li>
+                    <li className="flex items-start gap-1.5">
+                      <span className="text-amber-600 font-bold">·</span>
+                      <span><strong>§10.2 Amélioration continue :</strong> Preuve tangible de l'efficacité du système requise par les auditeurs de certification.</span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+
+              <button
+                onClick={() => setActiveStep('act')}
+                className="w-full inline-flex items-center justify-center gap-2 py-2 px-3 rounded-lg bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 text-xs font-semibold transition-colors"
+              >
+                <span>Accéder à la phase 4 : Act (Agir)</span>
+                <ArrowRight className="w-3.5 h-3.5 text-amber-700" />
+              </button>
+            </div>
+
+          </div>
+
+          {/* Tableau Récapitulatif : Correspondance Norme ISO 50001 & Modules UniSme */}
+          <div className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-xs">
+            <div className="px-5 py-3.5 bg-slate-50 border-b border-slate-200 flex items-center justify-between">
+              <div>
+                <h4 className="text-xs font-bold text-slate-900 uppercase tracking-wider">
+                  Matrice de correspondance ISO 50001:2018 & Digitalisation UniSme
+                </h4>
+                <p className="text-[11px] text-slate-500">
+                  Vue d'ensemble de la couverture des chapitres de la norme dans l'application
+                </p>
+              </div>
+              <span className="text-[11px] font-semibold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200">
+                100% Conforme ISO 50001
+              </span>
+            </div>
+
+            <div className="overflow-x-auto">
+              <table className="w-full text-xs text-left">
+                <thead className="bg-slate-100/75 text-slate-700 font-semibold border-b border-slate-200">
+                  <tr>
+                    <th className="px-4 py-2.5">Chapitre ISO 50001:2018</th>
+                    <th className="px-4 py-2.5">Intitulé normatif</th>
+                    <th className="px-4 py-2.5">Phase PDCA</th>
+                    <th className="px-4 py-2.5">Module dans UniSme</th>
+                    <th className="px-4 py-2.5 text-right">Action</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-100">
+                  <tr className="hover:bg-slate-50/70 transition-colors">
+                    <td className="px-4 py-2.5 font-mono font-bold text-slate-800">Chapitre 4</td>
+                    <td className="px-4 py-2.5 text-slate-700">Contexte, parties intéressées & domaine d'application</td>
+                    <td className="px-4 py-2.5"><span className="px-2 py-0.5 rounded bg-emerald-50 text-emerald-800 font-semibold text-[10px]">Plan</span></td>
+                    <td className="px-4 py-2.5 text-slate-600">Périmètre physique, SWOT des risques & matrice des parties prenantes</td>
+                    <td className="px-4 py-2.5 text-right"><button onClick={() => setActiveStep('plan')} className="text-emerald-700 hover:underline font-semibold text-[11px]">Ouvrir</button></td>
+                  </tr>
+                  <tr className="hover:bg-slate-50/70 transition-colors">
+                    <td className="px-4 py-2.5 font-mono font-bold text-slate-800">Chapitre 5</td>
+                    <td className="px-4 py-2.5 text-slate-700">Leadership, engagement & politique énergétique</td>
+                    <td className="px-4 py-2.5"><span className="px-2 py-0.5 rounded bg-emerald-50 text-emerald-800 font-semibold text-[10px]">Plan</span></td>
+                    <td className="px-4 py-2.5 text-slate-600">Politique énergétique signée & matrice RACI des rôles</td>
+                    <td className="px-4 py-2.5 text-right"><button onClick={() => setActiveStep('plan')} className="text-emerald-700 hover:underline font-semibold text-[11px]">Ouvrir</button></td>
+                  </tr>
+                  <tr className="hover:bg-slate-50/70 transition-colors">
+                    <td className="px-4 py-2.5 font-mono font-bold text-slate-800">Chapitre 6</td>
+                    <td className="px-4 py-2.5 text-slate-700">Planification énergétique, UES, IPÉ, SER & Cibles</td>
+                    <td className="px-4 py-2.5"><span className="px-2 py-0.5 rounded bg-emerald-50 text-emerald-800 font-semibold text-[10px]">Plan</span></td>
+                    <td className="px-4 py-2.5 text-slate-600">Revue énergétique, formules IPÉ/SER & plan de comptage</td>
+                    <td className="px-4 py-2.5 text-right"><button onClick={() => setActiveStep('plan')} className="text-emerald-700 hover:underline font-semibold text-[11px]">Ouvrir</button></td>
+                  </tr>
+                  <tr className="hover:bg-slate-50/70 transition-colors">
+                    <td className="px-4 py-2.5 font-mono font-bold text-slate-800">Chapitre 7</td>
+                    <td className="px-4 py-2.5 text-slate-700">Support, compétences, sensibilisation & communication</td>
+                    <td className="px-4 py-2.5"><span className="px-2 py-0.5 rounded bg-blue-50 text-blue-800 font-semibold text-[10px]">Do</span></td>
+                    <td className="px-4 py-2.5 text-slate-600">Preuves de compétences des référents et opérateurs clés</td>
+                    <td className="px-4 py-2.5 text-right"><button onClick={() => setActiveStep('do')} className="text-blue-700 hover:underline font-semibold text-[11px]">Ouvrir</button></td>
+                  </tr>
+                  <tr className="hover:bg-slate-50/70 transition-colors">
+                    <td className="px-4 py-2.5 font-mono font-bold text-slate-800">Chapitre 8</td>
+                    <td className="px-4 py-2.5 text-slate-700">Maîtrise opérationnelle, achats & conception</td>
+                    <td className="px-4 py-2.5"><span className="px-2 py-0.5 rounded bg-blue-50 text-blue-800 font-semibold text-[10px]">Do</span></td>
+                    <td className="px-4 py-2.5 text-slate-600">Plan d'actions d'économies d'énergie chiffré & consignes d'exploitation</td>
+                    <td className="px-4 py-2.5 text-right"><button onClick={() => setActiveStep('do')} className="text-blue-700 hover:underline font-semibold text-[11px]">Ouvrir</button></td>
+                  </tr>
+                  <tr className="hover:bg-slate-50/70 transition-colors">
+                    <td className="px-4 py-2.5 font-mono font-bold text-slate-800">Chapitre 9</td>
+                    <td className="px-4 py-2.5 text-slate-700">Évaluation des performances, audits internes & revue</td>
+                    <td className="px-4 py-2.5"><span className="px-2 py-0.5 rounded bg-purple-50 text-purple-800 font-semibold text-[10px]">Check</span></td>
+                    <td className="px-4 py-2.5 text-slate-600">Comparaison IPÉ vs SER, grille d'audits internes & revue de direction</td>
+                    <td className="px-4 py-2.5 text-right"><button onClick={() => setActiveStep('check')} className="text-purple-700 hover:underline font-semibold text-[11px]">Ouvrir</button></td>
+                  </tr>
+                  <tr className="hover:bg-slate-50/70 transition-colors">
+                    <td className="px-4 py-2.5 font-mono font-bold text-slate-800">Chapitre 10</td>
+                    <td className="px-4 py-2.5 text-slate-700">Amélioration continue, non-conformités & actions correctives</td>
+                    <td className="px-4 py-2.5"><span className="px-2 py-0.5 rounded bg-amber-50 text-amber-800 font-semibold text-[10px]">Act</span></td>
+                    <td className="px-4 py-2.5 text-slate-600">Registre des non-conformités, analyse des causes & clôture d'écarts</td>
+                    <td className="px-4 py-2.5 text-right"><button onClick={() => setActiveStep('act')} className="text-amber-700 hover:underline font-semibold text-[11px]">Ouvrir</button></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* =========================================================================
           PHASE 1 : PLAN (PLANIFIER)
