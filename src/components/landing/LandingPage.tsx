@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   Activity,
   ShieldCheck,
@@ -38,6 +38,26 @@ export const LandingPage: React.FC<LandingPageProps> = ({
 }) => {
   // Navigation fluide par ancre
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
+
+  // Triple-clic secret sur le logo pour accès direct Développeur / Admin
+  const logoClickCountRef = useRef<number>(0);
+  const logoClickTimerRef = useRef<NodeJS.Timeout | null>(null);
+
+  const handleLogoClick = () => {
+    logoClickCountRef.current += 1;
+    if (logoClickTimerRef.current) {
+      clearTimeout(logoClickTimerRef.current);
+    }
+
+    if (logoClickCountRef.current >= 3) {
+      logoClickCountRef.current = 0;
+      onEnterDirectDemo();
+    } else {
+      logoClickTimerRef.current = setTimeout(() => {
+        logoClickCountRef.current = 0;
+      }, 700);
+    }
+  };
 
   // Raccourci développeur secret (Alt + D) pour basculer directement sur la solution démo
   useEffect(() => {
@@ -164,8 +184,12 @@ export const LandingPage: React.FC<LandingPageProps> = ({
       ───────────────────────────────────────────────────────────── */}
       <header className="sticky top-0 z-40 bg-slate-950 border-b border-slate-800 text-white shadow-md">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
-          {/* Zone 1: Brand Wordmark */}
-          <div className="flex items-center gap-2.5 sm:gap-3 shrink-0">
+          {/* Zone 1: Brand Wordmark (Triple-clic secret pour accès direct Développeur) */}
+          <div
+            onClick={handleLogoClick}
+            className="flex items-center gap-2.5 sm:gap-3 shrink-0 cursor-pointer select-none"
+            title="UniSme"
+          >
             <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-gradient-to-tr from-emerald-600 to-emerald-400 p-0.5 shadow-md shadow-emerald-950">
               <div className="w-full h-full bg-slate-950 rounded-[10px] flex items-center justify-center">
                 <Activity className="w-4 h-4 sm:w-5 sm:h-5 text-emerald-400" />
@@ -383,14 +407,6 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                   🛡️ Management Normatif ISO 50001
                 </button>
               </div>
-
-              <button
-                onClick={onEnterDirectDemo}
-                className="text-xs text-emerald-400 hover:text-emerald-300 flex items-center gap-1 font-semibold shrink-0 cursor-pointer"
-              >
-                <span>Ouvrir l'application</span>
-                <ExternalLink className="w-3 h-3" />
-              </button>
             </div>
 
             {/* Vue Mockup Interactive */}
@@ -574,7 +590,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
               Pourquoi les démarches ISO 50001 s'essoufflent après la certification ?
             </h2>
             <p className="text-sm text-slate-600 mt-3 leading-relaxed">
-              La plupart des usines oscillent entre des fichiers Excel fragiles et des progiciels d'ingénieurs surdimensionnés.
+              La plupart des entreprises oscillent entre des fichiers Excel fragiles et des progiciels d'ingénieurs surdimensionnés.
             </p>
           </div>
 
@@ -1555,18 +1571,6 @@ export const LandingPage: React.FC<LandingPageProps> = ({
             <span>Certifié ISO 27001</span>
             <span>·</span>
             <span>Conformité RGPD & NIS2</span>
-          </div>
-
-          <div className="flex items-center gap-3">
-            {/* Accès direct démo ultra-discret (apparence d'un micro-indicateur système) */}
-            <button
-              onClick={onEnterDirectDemo}
-              className="text-[11px] text-slate-600 hover:text-slate-300 font-mono transition-all cursor-pointer py-1 px-2 rounded hover:bg-slate-900/60 flex items-center gap-1.5 opacity-60 hover:opacity-100"
-              title="Accès direct (Dev / Admin)"
-            >
-              <span className="w-1 h-1 rounded-full bg-slate-700"></span>
-              <span>démo</span>
-            </button>
           </div>
         </div>
       </footer>
