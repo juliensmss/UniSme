@@ -10,6 +10,9 @@ import { MeterMappingSection } from './components/MeterMappingSection';
 import { UserAccessSection } from './components/UserAccessSection';
 import { CommercialModal } from './components/CommercialModal';
 import { ISOReferenceModal } from './components/ISOReferenceModal';
+import { LandingPage } from './components/landing/LandingPage';
+import { SandboxLeadModal } from './components/landing/SandboxLeadModal';
+import { SandboxBanner } from './components/landing/SandboxBanner';
 
 import {
   generateInitialEnergyData,
@@ -64,6 +67,36 @@ import {
 } from 'lucide-react';
 
 export default function App() {
+  // Navigation entre le site commercial / landing page et l'application démo
+  const [viewMode, setViewMode] = useState<'landing' | 'demo'>(() => {
+    if (typeof window !== 'undefined' && window.location.search.includes('demo=true')) {
+      return 'demo';
+    }
+    return 'landing';
+  });
+
+  const [isSandboxModalOpen, setIsSandboxModalOpen] = useState(false);
+  const [sandboxUser, setSandboxUser] = useState<{ nom: string; prenom: string; email: string; entreprise: string } | null>(() => {
+    try {
+      const raw = localStorage.getItem('unisme_sandbox_user');
+      return raw ? JSON.parse(raw) : null;
+    } catch {
+      return null;
+    }
+  });
+
+  useEffect(() => {
+    if (viewMode === 'demo') {
+      const url = new URL(window.location.href);
+      url.searchParams.set('demo', 'true');
+      window.history.replaceState({}, '', url.toString());
+    } else {
+      const url = new URL(window.location.href);
+      url.searchParams.delete('demo');
+      window.history.replaceState({}, '', url.toString());
+    }
+  }, [viewMode]);
+
   const [currentPillar, setCurrentPillar] = useState<'sme' | 'supervision'>('sme');
   const [activeSection, setActiveSection] = useState<string>('intro');
 
@@ -196,28 +229,61 @@ export default function App() {
     setActiveSection('act');
   };
 
+  if (viewMode === 'landing') {
+    return (
+      <>
+        <LandingPage
+          onOpenSandboxModal={() => setIsSandboxModalOpen(true)}
+          onEnterDirectDemo={() => setViewMode('demo')}
+        />
+        <SandboxLeadModal
+          isOpen={isSandboxModalOpen}
+          onClose={() => setIsSandboxModalOpen(false)}
+          onStartSandbox={(user) => {
+            setSandboxUser(user);
+            setIsSandboxModalOpen(false);
+            setViewMode('demo');
+          }}
+        />
+      </>
+    );
+  }
+
   return (
     // Disposition figée : h-screen avec overflow-hidden garantissant que le menu latéral
     // et l'en-tête restent immobiles et parfaitement ancrés lors du défilement
-    <div className="h-screen w-screen overflow-hidden bg-slate-100/70 text-slate-900 flex font-sans">
+    <div className="h-screen w-screen overflow-hidden bg-slate-100/70 text-slate-900 flex flex-col font-sans">
       
-      {/* 1. Menu Latéral à Gauche (Sidebar) Fixe & Rétractable */}
-      <Sidebar
-        currentPillar={currentPillar}
-        activeSection={activeSection}
-        onSelectSection={handleSelectSection}
-        onOpenNormeModal={() => setIsNormeModalOpen(true)}
-        onOpenCommercialModal={() => setIsCommercialModalOpen(true)}
-        accessMode={accessMode}
-        userRole={userRole}
-        activeAlertCount={activeAlertCount}
-        siteMode="monosite"
-        selectedSiteName={currentSiteName}
-        isCollapsed={isSidebarCollapsed}
-        onToggleCollapse={() => setIsSidebarCollapsed(prev => !prev)}
-        isMobileOpen={isMobileDrawerOpen}
-        onCloseMobile={() => setIsMobileDrawerOpen(false)}
+      {/* 0. Bandeau Supérieur Sandbox & Navigation Démo */}
+      <SandboxBanner
+        onBackToLanding={() => setViewMode('landing')}
+        onRequestQuote={() => setViewMode('landing')}
+        onResetData={() => {
+          setData(generateInitialEnergyData(45));
+          setAlertRules(initialAlertRules);
+          setActions(initialActions);
+        }}
+        companyName={sandboxUser?.entreprise || 'Usine Val-de-Loire (VDL-01)'}
       />
+
+      <div className="flex-1 flex min-w-0 h-full overflow-hidden">
+        {/* 1. Menu Latéral à Gauche (Sidebar) Fixe & Rétractable */}
+        <Sidebar
+          currentPillar={currentPillar}
+          activeSection={activeSection}
+          onSelectSection={handleSelectSection}
+          onOpenNormeModal={() => setIsNormeModalOpen(true)}
+          onOpenCommercialModal={() => setViewMode('landing')}
+          accessMode={accessMode}
+          userRole={userRole}
+          activeAlertCount={activeAlertCount}
+          siteMode="monosite"
+          selectedSiteName={currentSiteName}
+          isCollapsed={isSidebarCollapsed}
+          onToggleCollapse={() => setIsSidebarCollapsed(prev => !prev)}
+          isMobileOpen={isMobileDrawerOpen}
+          onCloseMobile={() => setIsMobileDrawerOpen(false)}
+        />
 
       {/* 2. Conteneur Principal (En-tête Figé en haut + Zone de Défilement interne) */}
       <div className="flex-1 flex flex-col min-w-0 h-full overflow-hidden">
@@ -271,15 +337,15 @@ export default function App() {
           {/* Contrôles de Droite Épurés : Offres & Déploiement + Cloche d'Alertes + Menu Profil Utilisateur */}
           <div className="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
             
-            {/* Bouton Accès aux Offres & Déploiement B2B */}
+            {/* Bouton Redirection vers la Landing Page & Prise de contact */}
             <button
-              onClick={() => setIsCommercialModalOpen(true)}
-              className="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 text-xs font-semibold transition-colors shadow-2xs"
-              title="Découvrir les offres (Solution SaaS, Conseil ISO 50001, Partenariat)"
+              onClick={() => setViewMode('landing')}
+              className="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 text-xs font-semibold transition-colors shadow-2xs cursor-pointer"
+              title="Retourner à la page commerciale ou nous contacter"
             >
               <Sparkles className="w-3.5 h-3.5 text-emerald-600" />
-              <span className="hidden sm:inline">Offres & Déploiement</span>
-              <span className="sm:hidden">Offres</span>
+              <span className="hidden sm:inline">Nous contacter</span>
+              <span className="sm:hidden">Contact</span>
             </button>
             
             {/* Cloche d'alerte sur seuil opérationnelle */}
@@ -733,6 +799,7 @@ export default function App() {
 
 
         </main>
+      </div>
       </div>
 
       {/* Modal Référentiel NF EN ISO 50001:2018 */}

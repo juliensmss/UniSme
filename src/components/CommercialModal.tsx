@@ -7,8 +7,10 @@ import {
   ShieldCheck,
   Clock,
   Loader2,
-  Sparkles
+  Sparkles,
+  Mail
 } from 'lucide-react';
+import { recordLeadInFirestore } from '../lib/firebase';
 
 interface CommercialModalProps {
   isOpen: boolean;
@@ -50,6 +52,17 @@ export const CommercialModal: React.FC<CommercialModalProps> = ({
     setIsSubmitting(true);
 
     try {
+      // 1. Enregistrement direct dans Cloud Firestore (Collection 'leads')
+      recordLeadInFirestore({
+        nom,
+        prenom,
+        email,
+        entreprise,
+        source: 'contact_form',
+        objet,
+        message
+      });
+
       const response = await fetch('https://api.web3forms.com/submit', {
         method: 'POST',
         headers: {
@@ -104,14 +117,14 @@ export const CommercialModal: React.FC<CommercialModalProps> = ({
         <div className="bg-slate-900 text-white px-6 py-4 border-b border-slate-800 flex items-center justify-between">
           <div className="flex items-center gap-2.5">
             <div className="w-8 h-8 rounded-lg bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center text-emerald-400">
-              <Sparkles className="w-4 h-4" />
+              <Mail className="w-4 h-4" />
             </div>
             <div>
               <h2 className="text-base font-bold text-white leading-tight">
-                Déployer la solution UniSme
+                Prendre contact avec l'équipe UniSme
               </h2>
               <p className="text-xs text-slate-400">
-                Transmettez votre demande pour échanger avec notre équipe
+                Transmettez votre message pour échanger avec notre équipe
               </p>
             </div>
           </div>
@@ -294,15 +307,10 @@ export const CommercialModal: React.FC<CommercialModalProps> = ({
                 ) : (
                   <>
                     <Send className="w-4 h-4" />
-                    <span>Envoyer la demande</span>
+                    <span>Envoyer le message</span>
                   </>
                 )}
               </button>
-
-              <div className="flex items-center justify-center gap-2 text-[11px] text-slate-500">
-                <ShieldCheck className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
-                <span>Données confidentielles · Aucun engagement · Réponse sous 24h</span>
-              </div>
             </div>
           </form>
         )}
