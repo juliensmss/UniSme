@@ -80,12 +80,14 @@ export const SandboxLeadModal: React.FC<SandboxLeadModalProps> = ({
         // Ignorer l'échec d'envoi réseau pour ne pas bloquer l'accès à la démo
       });
 
-      // Stocker les données de session du visiteur
+      // Stocker les données de session du visiteur (validité 7 jours)
       const leadPayload = {
         nom: nom.trim(),
         prenom: prenom.trim(),
         email: email.trim(),
-        entreprise: entreprise.trim() || 'Usine Partenaire'
+        entreprise: entreprise.trim() || 'Usine Partenaire',
+        savedAt: Date.now(),
+        expiresAt: Date.now() + 7 * 24 * 60 * 60 * 1000 // 7 jours de validité
       };
       localStorage.setItem('unisme_sandbox_user', JSON.stringify(leadPayload));
 

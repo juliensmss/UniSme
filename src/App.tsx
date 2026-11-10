@@ -76,10 +76,17 @@ export default function App() {
   });
 
   const [isSandboxModalOpen, setIsSandboxModalOpen] = useState(false);
-  const [sandboxUser, setSandboxUser] = useState<{ nom: string; prenom: string; email: string; entreprise: string } | null>(() => {
+  const [sandboxUser, setSandboxUser] = useState<{ nom: string; prenom: string; email: string; entreprise: string; expiresAt?: number } | null>(() => {
     try {
       const raw = localStorage.getItem('unisme_sandbox_user');
-      return raw ? JSON.parse(raw) : null;
+      if (!raw) return null;
+      const parsed = JSON.parse(raw);
+      // Validité 7 jours
+      if (parsed.expiresAt && Date.now() > parsed.expiresAt) {
+        localStorage.removeItem('unisme_sandbox_user');
+        return null;
+      }
+      return parsed;
     } catch {
       return null;
     }
@@ -230,17 +237,41 @@ export default function App() {
   };
 
   if (viewMode === 'landing') {
+    const handleClearDemoSession = () => {
+      try {
+        localStorage.removeItem('unisme_sandbox_user');
+      } catch {}
+      setSandboxUser(null);
+      setIsSandboxModalOpen(true);
+    };
+
     return (
       <>
         <LandingPage
-          onOpenSandboxModal={() => setIsSandboxModalOpen(true)}
+          onOpenSandboxModal={() => {
+            if (sandboxUser) {
+              setViewMode('demo');
+            } else {
+              setIsSandboxModalOpen(true);
+            }
+          }}
           onEnterDirectDemo={() => setViewMode('demo')}
+          activeDemoUser={sandboxUser}
+          onClearDemoSession={handleClearDemoSession}
         />
         <SandboxLeadModal
           isOpen={isSandboxModalOpen}
           onClose={() => setIsSandboxModalOpen(false)}
           onStartSandbox={(user) => {
-            setSandboxUser(user);
+            const sessionPayload = {
+              ...user,
+              savedAt: Date.now(),
+              expiresAt: Date.now() + 7 * 24 * 60 * 60 * 1000 // 7 jours de validité
+            };
+            try {
+              localStorage.setItem('unisme_sandbox_user', JSON.stringify(sessionPayload));
+            } catch {}
+            setSandboxUser(sessionPayload);
             setIsSandboxModalOpen(false);
             setViewMode('demo');
           }}

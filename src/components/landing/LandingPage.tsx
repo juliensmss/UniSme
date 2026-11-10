@@ -30,11 +30,15 @@ import { recordLeadInFirestore } from '../../lib/firebase';
 interface LandingPageProps {
   onEnterDirectDemo: () => void;
   onOpenSandboxModal: () => void;
+  activeDemoUser?: { nom: string; prenom: string; email: string; entreprise: string } | null;
+  onClearDemoSession?: () => void;
 }
 
 export const LandingPage: React.FC<LandingPageProps> = ({
   onEnterDirectDemo,
-  onOpenSandboxModal
+  onOpenSandboxModal,
+  activeDemoUser,
+  onClearDemoSession
 }) => {
   // Navigation fluide par ancre
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
@@ -239,10 +243,11 @@ export const LandingPage: React.FC<LandingPageProps> = ({
             </button>
 
             <button
-              onClick={onOpenSandboxModal}
+              onClick={activeDemoUser ? onEnterDirectDemo : onOpenSandboxModal}
               className="px-3 sm:px-4 py-2 text-xs font-bold text-slate-950 bg-emerald-400 hover:bg-emerald-300 active:bg-emerald-500 rounded-lg transition-all shadow-md shadow-emerald-950/40 whitespace-nowrap shrink-0 cursor-pointer inline-flex items-center gap-1.5"
+              title={activeDemoUser ? `Reprendre votre session (${activeDemoUser.prenom} ${activeDemoUser.nom})` : 'Tester la version démo'}
             >
-              <span>🚀 Tester la version démo</span>
+              <span>{activeDemoUser ? '🚀 Reprendre la démo' : '🚀 Tester la version démo'}</span>
             </button>
 
             {/* Bouton Hamburger pour très petits écrans (< 640px) */}
@@ -334,22 +339,45 @@ export const LandingPage: React.FC<LandingPageProps> = ({
               L'unique plateforme combinant management de l'énergie (ISO 50001) et supervision en temps réel des consommations et facteurs influents, sans investissement matériel lourd.
             </p>
 
-            {/* CTAs */}
-            <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-3.5">
-              <button
-                onClick={onOpenSandboxModal}
-                className="w-full sm:w-auto px-6 py-3.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-700 text-white font-bold text-sm transition-all shadow-lg shadow-emerald-600/20 flex items-center justify-center gap-2 cursor-pointer"
-              >
-                <span>🚀 Tester la démo en direct</span>
-              </button>
+            {/* CTAs avec reconnaissance automatique de session */}
+            <div className="pt-2 flex flex-col items-center justify-center gap-2.5">
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-3.5 w-full sm:w-auto">
+                {activeDemoUser ? (
+                  <button
+                    onClick={onEnterDirectDemo}
+                    className="w-full sm:w-auto px-6 py-3.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-700 text-white font-bold text-sm transition-all shadow-lg shadow-emerald-600/20 flex items-center justify-center gap-2 cursor-pointer"
+                  >
+                    <span>🚀 Reprendre ma démo ({activeDemoUser.prenom})</span>
+                  </button>
+                ) : (
+                  <button
+                    onClick={onOpenSandboxModal}
+                    className="w-full sm:w-auto px-6 py-3.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-700 text-white font-bold text-sm transition-all shadow-lg shadow-emerald-600/20 flex items-center justify-center gap-2 cursor-pointer"
+                  >
+                    <span>🚀 Tester la démo en direct</span>
+                  </button>
+                )}
 
-              <button
-                onClick={() => scrollToSection('contact-section')}
-                className="w-full sm:w-auto px-6 py-3.5 rounded-xl bg-white hover:bg-slate-50 text-slate-800 font-semibold text-sm border border-slate-300 shadow-xs transition-all flex items-center justify-center gap-2 cursor-pointer"
-              >
-                <Mail className="w-4 h-4 text-emerald-600" />
-                <span>Nous contacter</span>
-              </button>
+                <button
+                  onClick={() => scrollToSection('contact-section')}
+                  className="w-full sm:w-auto px-6 py-3.5 rounded-xl bg-white hover:bg-slate-50 text-slate-800 font-semibold text-sm border border-slate-300 shadow-xs transition-all flex items-center justify-center gap-2 cursor-pointer"
+                >
+                  <Mail className="w-4 h-4 text-emerald-600" />
+                  <span>Nous contacter</span>
+                </button>
+              </div>
+
+              {activeDemoUser && onClearDemoSession && (
+                <p className="text-xs text-slate-500 text-center">
+                  Session active : <strong className="text-slate-800 font-semibold">{activeDemoUser.prenom} {activeDemoUser.nom}</strong> ({activeDemoUser.entreprise || 'Usine'}).{' '}
+                  <button
+                    onClick={onClearDemoSession}
+                    className="text-emerald-700 hover:text-emerald-800 underline font-medium cursor-pointer ml-1"
+                  >
+                    Ce n'est pas vous ? S'inscrire sous un autre nom
+                  </button>
+                </p>
+              )}
             </div>
 
             {/* Preuves d'assurance */}
@@ -1294,8 +1322,8 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                 a: "Moins de 24 heures pour une mise en route opérationnelle. Contrairement aux projets informatiques lourds, l'initialisation de vos UES et l'import de vos premières données de mesure se font immédiatement grâce à notre structure pré-paramétrée selon la norme ISO 50001:2018."
               },
               {
-                q: "La solution est-elle reconnue lors des audits AFNOR ou Bureau Veritas ?",
-                a: "Absolument. UniSme a été spécialement modélisée en miroir des chapitres 4 à 10 de la norme NF EN ISO 50001:2018. Les auditeurs certificateurs disposent d'un profil dédié en lecture seule leur permettant d'accéder instantanément à la matrice SWOT, aux justifications des UES, aux formules IPÉ/SER et aux bilans d'actions chiffrés."
+                q: "Comment UniSme facilite-t-il les audits de certification ISO 50001 ?",
+                a: "UniSme centralise et structure l'ensemble des éléments exigés par la norme NF EN ISO 50001:2018 (revue énergétique §6.3, indicateurs IPÉ §6.4, plans d'actions §6.2 et revues de management §9.3). Lors des audits menés par les organismes certificateurs (AFNOR, Bureau Veritas, DNV, etc.), votre équipe dispose immédiatement d'un dossier documenté, traçable et chiffré avec un profil dédié en lecture seule, ce qui divise par deux le temps de préparation."
               }
             ].map((faq, index) => {
               const isOpen = openFaqIndex === index;
@@ -1563,14 +1591,6 @@ export const LandingPage: React.FC<LandingPageProps> = ({
             <p className="text-slate-400 text-[11px]">
               Management & Supervision de l'Énergie selon la norme NF EN ISO 50001:2018.
             </p>
-          </div>
-
-          <div className="flex items-center gap-6 text-[11px] text-slate-400">
-            <span>Hébergement Souverain UE</span>
-            <span>·</span>
-            <span>Certifié ISO 27001</span>
-            <span>·</span>
-            <span>Conformité RGPD & NIS2</span>
           </div>
         </div>
       </footer>
