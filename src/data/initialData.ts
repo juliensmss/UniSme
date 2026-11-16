@@ -736,9 +736,9 @@ export const initialUsers: UserAccountItem[] = [
   },
   {
     id: "usr-03",
-    nom: "Berrada",
-    prenom: "Karim",
-    email: "k.berrada@valdeloire-industrie.fr",
+    nom: "Mercier",
+    prenom: "Nicolas",
+    email: "n.mercier@valdeloire-industrie.fr",
     role: "operator",
     fonction: "Chef d'Équipe Maintenance Utilités",
     departement: "Maintenance Usine",
@@ -761,7 +761,7 @@ export const initialUsers: UserAccountItem[] = [
   {
     id: "usr-05",
     nom: "Lemaire",
-    prenom: "Dr. Antoine",
+    prenom: "Antoine",
     email: "a.lemaire@afnor-certification.org",
     role: "auditor",
     fonction: "Auditeur Principal Tierce Partie ISO 50001",

@@ -12,7 +12,6 @@ import { CommercialModal } from './components/CommercialModal';
 import { ISOReferenceModal } from './components/ISOReferenceModal';
 import { LandingPage } from './components/landing/LandingPage';
 import { SandboxLeadModal } from './components/landing/SandboxLeadModal';
-import { SandboxBanner } from './components/landing/SandboxBanner';
 
 import {
   generateInitialEnergyData,
@@ -48,7 +47,7 @@ import {
   ChevronDown,
   CheckCircle2,
   Check,
-  Sparkles,
+  ArrowLeft,
   Menu,
   Layers,
   CalendarCheck,
@@ -284,19 +283,6 @@ export default function App() {
     // Disposition figée : h-screen avec overflow-hidden garantissant que le menu latéral
     // et l'en-tête restent immobiles et parfaitement ancrés lors du défilement
     <div className="h-screen w-screen overflow-hidden bg-slate-100/70 text-slate-900 flex flex-col font-sans">
-      
-      {/* 0. Bandeau Supérieur Sandbox & Navigation Démo */}
-      <SandboxBanner
-        onBackToLanding={() => setViewMode('landing')}
-        onRequestQuote={() => setViewMode('landing')}
-        onResetData={() => {
-          setData(generateInitialEnergyData(45));
-          setAlertRules(initialAlertRules);
-          setActions(initialActions);
-        }}
-        companyName={sandboxUser?.entreprise || 'Usine Val-de-Loire (VDL-01)'}
-      />
-
       <div className="flex-1 flex min-w-0 h-full overflow-hidden">
         {/* 1. Menu Latéral à Gauche (Sidebar) Fixe & Rétractable */}
         <Sidebar
@@ -368,15 +354,15 @@ export default function App() {
           {/* Contrôles de Droite Épurés : Offres & Déploiement + Cloche d'Alertes + Menu Profil Utilisateur */}
           <div className="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
             
-            {/* Bouton Redirection vers la Landing Page & Prise de contact */}
+            {/* Bouton Retour vers la landing page commerciale */}
             <button
               onClick={() => setViewMode('landing')}
-              className="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 text-xs font-semibold transition-colors shadow-2xs cursor-pointer"
-              title="Retourner à la page commerciale ou nous contacter"
+              className="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200/80 text-slate-700 hover:text-slate-900 border border-slate-200 text-xs font-semibold transition-colors shadow-2xs cursor-pointer"
+              title="Retourner à la page commerciale UniSme"
             >
-              <Sparkles className="w-3.5 h-3.5 text-emerald-600" />
-              <span className="hidden sm:inline">Nous contacter</span>
-              <span className="sm:hidden">Contact</span>
+              <ArrowLeft className="w-3.5 h-3.5 text-slate-500" />
+              <span className="hidden sm:inline">Site commercial</span>
+              <span className="sm:hidden">Site</span>
             </button>
             
             {/* Cloche d'alerte sur seuil opérationnelle */}

@@ -11,7 +11,6 @@ import {
   Cpu,
   Clock,
   Sparkles,
-  ExternalLink,
   ChevronDown,
   BarChart3,
   Bell,
@@ -81,9 +80,6 @@ export const LandingPage: React.FC<LandingPageProps> = ({
       el.scrollIntoView({ behavior: 'smooth' });
     }
   };
-
-  // State pour le mockup interactif dans la Hero
-  const [heroMockupTab, setHeroMockupTab] = useState<'supervision' | 'pdca'>('supervision');
 
   // State pour les 4 piliers interactifs
   const [activePillarTab, setActivePillarTab] = useState<number>(0);
@@ -316,27 +312,21 @@ export const LandingPage: React.FC<LandingPageProps> = ({
       {/* ─────────────────────────────────────────────────────────────
           1. SECTION HÉROÏQUE (Fond Blanc & Épuré)
       ───────────────────────────────────────────────────────────── */}
-      <section className="relative pt-12 pb-20 sm:pt-16 sm:pb-28 overflow-hidden bg-gradient-to-b from-slate-50/70 via-white to-white">
+      <section className="relative pt-14 pb-16 sm:pt-20 sm:pb-24 overflow-hidden bg-gradient-to-b from-slate-50/70 via-white to-white">
         {/* Halo subtil de teinte vert émeraude */}
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[900px] h-[450px] bg-emerald-100/40 blur-[140px] pointer-events-none rounded-full" />
         <div className="absolute top-48 right-10 w-96 h-96 bg-blue-100/30 blur-[130px] pointer-events-none rounded-full" />
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
           <div className="max-w-3xl mx-auto text-center space-y-6">
-            {/* Badge de positionnement épuré */}
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-50 border border-emerald-200 text-xs font-semibold text-emerald-800 shadow-xs">
-              <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
-              <span>Plateforme SaaS ISO 50001 & Supervision Énergétique</span>
-            </div>
-
             {/* Titre Fort (Épuré & Raffiné - font-semibold tracking-tight) */}
             <h1 className="text-3xl sm:text-5xl lg:text-6xl font-semibold tracking-tight text-slate-900 text-balance leading-[1.15]">
-              Simplifiez votre SMÉ. Maîtrisez vos flux énergétiques en temps réel.
+              Simplifiez votre SMEn. Optimisez vos flux énergétiques en temps réel.
             </h1>
 
             {/* Sous-titre Explicatif */}
             <p className="text-base sm:text-lg text-slate-600 max-w-2xl mx-auto leading-relaxed">
-              L'unique plateforme combinant management de l'énergie (ISO 50001) et supervision en temps réel des consommations et facteurs influents, sans investissement matériel lourd.
+              L'unique plateforme combinant Système de Management de l'Énergie (ISO 50001) et supervision en temps réel des consommations et facteurs influents, sans investissement matériel lourd.
             </p>
 
             {/* CTAs avec reconnaissance automatique de session */}
@@ -396,210 +386,6 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                 <Check className="w-3.5 h-3.5 text-emerald-600 stroke-[3]" />
                 100 % conforme ISO 50001:2018
               </span>
-            </div>
-          </div>
-
-          {/* VISUEL D'IMPACT : Mockup Interactif Conjoint Courbes de Charge & PDCA */}
-          <div className="mt-12 sm:mt-16 max-w-5xl mx-auto rounded-2xl bg-white border border-slate-200 shadow-2xl overflow-hidden ring-1 ring-slate-900/5">
-            {/* Fenêtre OS Chrome Bar */}
-            <div className="bg-slate-950 px-4 py-3 border-b border-slate-800 flex items-center justify-between gap-4 text-white">
-              <div className="flex items-center gap-2">
-                <div className="w-3 h-3 rounded-full bg-rose-500/90" />
-                <div className="w-3 h-3 rounded-full bg-amber-500/90" />
-                <div className="w-3 h-3 rounded-full bg-emerald-500/90" />
-                <span className="ml-2 text-xs text-slate-400 font-mono hidden sm:inline">
-                  unisme.app / Usine Val-de-Loire (VDL-01)
-                </span>
-              </div>
-
-              {/* Segmented control fonctionnel pour explorer les deux facettes */}
-              <div className="flex items-center bg-slate-900 p-1 rounded-lg border border-slate-800 text-xs">
-                <button
-                  onClick={() => setHeroMockupTab('supervision')}
-                  className={`px-3 py-1 rounded-md font-semibold transition-all cursor-pointer ${
-                    heroMockupTab === 'supervision'
-                      ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 shadow-xs'
-                      : 'text-slate-400 hover:text-white'
-                  }`}
-                >
-                  ⚡ Supervision & Courbes de Charge
-                </button>
-                <button
-                  onClick={() => setHeroMockupTab('pdca')}
-                  className={`px-3 py-1 rounded-md font-semibold transition-all cursor-pointer ${
-                    heroMockupTab === 'pdca'
-                      ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 shadow-xs'
-                      : 'text-slate-400 hover:text-white'
-                  }`}
-                >
-                  🛡️ Management Normatif ISO 50001
-                </button>
-              </div>
-            </div>
-
-            {/* Vue Mockup Interactive */}
-            <div className="p-4 sm:p-6 bg-slate-50/70 border-t border-slate-100">
-              {heroMockupTab === 'supervision' ? (
-                /* Facette Supervision Énergétique & Courbe de Charge */
-                <div className="space-y-4">
-                  {/* KPI Bar */}
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                    <div className="bg-white border border-slate-200/90 rounded-xl p-3.5 shadow-xs">
-                      <div className="text-[11px] text-slate-500 font-semibold">Consommation Totale Active</div>
-                      <div className="text-xl font-bold text-slate-900 tabular-nums mt-1">2 840 kWh</div>
-                      <div className="text-[11px] text-emerald-600 font-medium flex items-center gap-1 mt-0.5">
-                        <TrendingDown className="w-3 h-3" />
-                        <span>-8.4% vs SER Référence</span>
-                      </div>
-                    </div>
-
-                    <div className="bg-white border border-slate-200/90 rounded-xl p-3.5 shadow-xs">
-                      <div className="text-[11px] text-slate-500 font-semibold">UES 1 : Four Traitement</div>
-                      <div className="text-xl font-bold text-slate-900 tabular-nums mt-1">1 245 kWh</div>
-                      <div className="text-[11px] text-slate-500 mt-0.5 font-medium">Ratio IPÉ : 0.82 kWh/pièce</div>
-                    </div>
-
-                    <div className="bg-white border border-slate-200/90 rounded-xl p-3.5 shadow-xs">
-                      <div className="text-[11px] text-slate-500 font-semibold">UES 2 : Air Comprimé</div>
-                      <div className="text-xl font-bold text-slate-900 tabular-nums mt-1">420 kWh</div>
-                      <div className="text-[11px] text-amber-600 mt-0.5 font-medium">Talon week-end : nominal</div>
-                    </div>
-
-                    <div className="bg-white border border-slate-200/90 rounded-xl p-3.5 shadow-xs">
-                      <div className="text-[11px] text-slate-500 font-semibold">Score Conformité Audit</div>
-                      <div className="text-xl font-bold text-emerald-600 tabular-nums mt-1">96 %</div>
-                      <div className="text-[11px] text-emerald-700 mt-0.5 font-medium">Statut : Audit-Ready</div>
-                    </div>
-                  </div>
-
-                  {/* Graphique Courbe de charge simulé */}
-                  <div className="bg-white border border-slate-200 rounded-xl p-4 sm:p-5 shadow-xs">
-                    <div className="flex items-center justify-between mb-3 text-xs">
-                      <div>
-                        <span className="font-bold text-slate-900 text-sm">Courbe de Charge — Réel vs Situation Énergétique de Référence (SER)</span>
-                        <p className="text-[11px] text-slate-500 mt-0.5">Restitution temps réel avec détection des dépassements d'objectifs</p>
-                      </div>
-                      <div className="flex items-center gap-3 text-xs font-medium">
-                        <span className="flex items-center gap-1.5 text-slate-600">
-                          <span className="w-3 h-0.5 bg-slate-400 rounded-full"></span>
-                          SER Baseline
-                        </span>
-                        <span className="flex items-center gap-1.5 text-emerald-700 font-semibold">
-                          <span className="w-3 h-0.5 bg-emerald-600 rounded-full"></span>
-                          Consommation Réelle
-                        </span>
-                      </div>
-                    </div>
-
-                    {/* SVG Curve */}
-                    <div className="h-44 w-full">
-                      <svg viewBox="0 0 800 160" className="w-full h-full preserve-3d overflow-visible">
-                        <defs>
-                          <linearGradient id="realGradLight" x1="0" y1="0" x2="0" y2="1">
-                            <stop offset="0%" stopColor="#10B981" stopOpacity="0.25" />
-                            <stop offset="100%" stopColor="#10B981" stopOpacity="0.0" />
-                          </linearGradient>
-                        </defs>
-                        {/* Lignes de repère douces */}
-                        <line x1="0" y1="40" x2="800" y2="40" stroke="#E2E8F0" strokeDasharray="3 3" />
-                        <line x1="0" y1="80" x2="800" y2="80" stroke="#E2E8F0" strokeDasharray="3 3" />
-                        <line x1="0" y1="120" x2="800" y2="120" stroke="#E2E8F0" strokeDasharray="3 3" />
-
-                        {/* Baseline SER (gris pointillés) */}
-                        <path
-                          d="M 0 110 Q 150 70 300 75 T 500 55 T 800 65"
-                          fill="none"
-                          stroke="#94A3B8"
-                          strokeWidth="2"
-                          strokeDasharray="4 4"
-                        />
-
-                        {/* Zone remplie Réel */}
-                        <path
-                          d="M 0 125 Q 150 85 300 90 T 500 70 T 800 80 L 800 160 L 0 160 Z"
-                          fill="url(#realGradLight)"
-                        />
-
-                        {/* Courbe Réelle (verte émeraude) */}
-                        <path
-                          d="M 0 125 Q 150 85 300 90 T 500 70 T 800 80"
-                          fill="none"
-                          stroke="#059669"
-                          strokeWidth="2.5"
-                        />
-
-                        {/* Point d'anomalie détectée */}
-                        <circle cx="480" cy="72" r="4" fill="#059669" />
-                        <circle cx="480" cy="72" r="9" fill="#10B981" opacity="0.4" className="animate-ping" />
-                      </svg>
-                    </div>
-
-                    <div className="flex items-center justify-between text-[11px] text-slate-500 font-mono mt-2 border-t border-slate-100 pt-2">
-                      <span>00:00 (Nuit)</span>
-                      <span>06:00 (Poste 1)</span>
-                      <span>12:00 (Creux)</span>
-                      <span>18:00 (Poste 2)</span>
-                      <span>23:59</span>
-                    </div>
-                  </div>
-                </div>
-              ) : (
-                /* Facette Management ISO 50001 & Planification PDCA */
-                <div className="space-y-4">
-                  <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
-                    <div className="bg-white border border-slate-200 p-3.5 rounded-xl shadow-xs">
-                      <div className="flex items-center justify-between text-xs text-emerald-700 font-bold mb-1">
-                        <span>1. PLAN (§4-§6)</span>
-                        <Check className="w-3.5 h-3.5 stroke-[3]" />
-                      </div>
-                      <p className="text-xs text-slate-900 font-bold">Revue Énergétique & UES</p>
-                      <p className="text-[11px] text-slate-600 mt-1">4 Usages Énergétiques Significatifs définis avec facteurs d'influence.</p>
-                    </div>
-
-                    <div className="bg-white border border-slate-200 p-3.5 rounded-xl shadow-xs">
-                      <div className="flex items-center justify-between text-xs text-blue-700 font-bold mb-1">
-                        <span>2. DO (§7-§8)</span>
-                        <Check className="w-3.5 h-3.5 stroke-[3]" />
-                      </div>
-                      <p className="text-xs text-slate-900 font-bold">Plan d'Actions & Maîtrise</p>
-                      <p className="text-[11px] text-slate-600 mt-1">7 actions budgétées, économies mesurées selon IPMVP.</p>
-                    </div>
-
-                    <div className="bg-white border border-slate-200 p-3.5 rounded-xl shadow-xs">
-                      <div className="flex items-center justify-between text-xs text-purple-700 font-bold mb-1">
-                        <span>3. CHECK (§9)</span>
-                        <span className="text-[10px] font-mono text-purple-700 bg-purple-50 px-1.5 py-0.5 rounded">Actif</span>
-                      </div>
-                      <p className="text-xs text-slate-900 font-bold">Audit Interne & Non-Conf.</p>
-                      <p className="text-[11px] text-slate-600 mt-1">Traçabilité complète des preuves d'audit et écarts constatés.</p>
-                    </div>
-
-                    <div className="bg-white border border-slate-200 p-3.5 rounded-xl shadow-xs">
-                      <div className="flex items-center justify-between text-xs text-amber-700 font-bold mb-1">
-                        <span>4. ACT (§10)</span>
-                        <span className="text-[10px] font-mono text-amber-700 bg-amber-50 px-1.5 py-0.5 rounded">Planifié</span>
-                      </div>
-                      <p className="text-xs text-slate-900 font-bold">Revue de Direction</p>
-                      <p className="text-[11px] text-slate-600 mt-1">Génération automatisée du dossier de revue pour certificateur.</p>
-                    </div>
-                  </div>
-
-                  <div className="bg-emerald-50/80 border border-emerald-200 rounded-xl p-4 flex flex-col sm:flex-row items-center justify-between gap-4">
-                    <div className="space-y-1">
-                      <span className="text-xs font-bold text-emerald-900">Gouvernance Collaborative & Rôles RBAC (§5.3)</span>
-                      <p className="text-xs text-emerald-800">
-                        Admin, Équipe Énergie, Opérateurs de ligne et Auditeurs externes disposent d'interfaces adaptées sans risque d'altération des formules.
-                      </p>
-                    </div>
-                    <button
-                      onClick={onOpenSandboxModal}
-                      className="px-4 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs whitespace-nowrap cursor-pointer shadow-xs"
-                    >
-                      Explorer le module SMÉ
-                    </button>
-                  </div>
-                </div>
-              )}
             </div>
           </div>
         </div>
@@ -735,13 +521,13 @@ export const LandingPage: React.FC<LandingPageProps> = ({
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-3xl mx-auto mb-14">
             <span className="text-xs font-bold uppercase tracking-wider text-emerald-700">
-              Conçu pour le Terrain & les Audits
+              Conçu pour le terrain &amp; les audits
             </span>
             <h2 className="text-2xl sm:text-4xl font-semibold tracking-tight text-slate-900 mt-2">
-              Les 4 Piliers Fonctionnels de la Suite UniSme
+              Les 4 piliers fonctionnels de la suite UniSme
             </h2>
             <p className="text-sm text-slate-600 mt-3 leading-relaxed">
-              Tout ce dont votre usine a besoin pour piloter ses flux énergétiques et garantir sa certification sans stress.
+              Tout ce dont votre entreprise a besoin pour piloter ses flux énergétiques et sécuriser sa démarche ISO 50001.
             </p>
           </div>
 
@@ -750,21 +536,21 @@ export const LandingPage: React.FC<LandingPageProps> = ({
             {[
               {
                 title: 'Digitalisation ISO 50001',
-                badge: 'PDCA Normatif',
+                badge: 'PDCA normatif',
                 icon: ShieldCheck
               },
               {
-                title: 'Supervision Temps Réel',
-                badge: 'SER vs Réel',
+                title: 'Supervision temps réel',
+                badge: 'SER vs réel',
                 icon: Activity
               },
               {
-                title: 'Centre d\'Alertes',
-                badge: 'Dérives & Talons',
+                title: 'Centre d\'alertes',
+                badge: 'Dérives & talons',
                 icon: Bell
               },
               {
-                title: 'Intégration Universelle',
+                title: 'Intégration universelle',
                 badge: 'IoT, Modbus, CSV',
                 icon: Database
               }
@@ -800,7 +586,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                 <div className="space-y-4">
                   <div className="inline-flex items-center gap-2 text-xs font-bold text-emerald-700">
                     <ShieldCheck className="w-4 h-4" />
-                    <span>PILIER 1 : DIGITALISATION ISO 50001 (PDCA)</span>
+                    <span>Pilier 1 · Digitalisation ISO 50001 (PDCA)</span>
                   </div>
                   <h3 className="text-xl sm:text-2xl font-semibold tracking-tight text-slate-900">
                     Suppression des méthodes disparates et pilotage centralisé
@@ -811,39 +597,102 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                   <ul className="space-y-2 text-xs text-slate-700">
                     <li className="flex items-start gap-2">
                       <Check className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
-                      <span><strong>Revue Énergétique (§6.3) :</strong> Identification guidée des Usages Énergétiques Significatifs (UES) et facteurs statiques.</span>
+                      <span><strong>Revue énergétique (§6.3) :</strong> Identification guidée des Usages Énergétiques Significatifs (UES) et facteurs statiques.</span>
                     </li>
                     <li className="flex items-start gap-2">
                       <Check className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
-                      <span><strong>Indicateurs IPÉ & SER (§6.4) :</strong> Définition des formules de performance énergétique et modélisation de référence.</span>
+                      <span><strong>Indicateurs IPÉ &amp; SER (§6.4) :</strong> Définition des formules de performance énergétique et modélisation de référence.</span>
                     </li>
                     <li className="flex items-start gap-2">
                       <Check className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
-                      <span><strong>Plan d'Actions (§6.2) :</strong> Budgétisation, suivi des gains prévus vs mesurés, et calcul automatique des économies d'énergie.</span>
+                      <span><strong>Plan d'actions (§6.2) :</strong> Budgétisation, suivi des gains prévus vs mesurés, et calcul automatique des économies d'énergie.</span>
                     </li>
                     <li className="flex items-start gap-2">
                       <Check className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
-                      <span><strong>Revue de Management (§9.3) :</strong> Consolidation automatique pour le comité de direction et les auditeurs certificateurs.</span>
+                      <span><strong>Revue de management (§9.3) :</strong> Consolidation automatique pour le comité de direction et la préparation des audits.</span>
                     </li>
                   </ul>
                 </div>
-                <div className="bg-white border border-slate-200 rounded-xl p-5 space-y-3 shadow-xs">
-                  <div className="text-xs font-bold text-slate-900 flex items-center justify-between border-b border-slate-100 pb-2">
-                    <span>Revue Énergétique Industrielle</span>
-                    <span className="text-[10px] text-emerald-700 font-mono font-bold">Conforme §6.3</span>
+
+                {/* Visuel PDCA par chapitre + Revue énergétique */}
+                <div className="space-y-3">
+                  <div className="bg-white border border-slate-200 rounded-xl p-4 sm:p-5 space-y-3 shadow-xs">
+                    <div className="text-xs font-bold text-slate-900 flex items-center justify-between border-b border-slate-100 pb-2">
+                      <span>Cycle PDCA par chapitre ISO 50001:2018</span>
+                      <span className="text-[10px] text-emerald-700 font-mono font-semibold bg-emerald-50 px-2 py-0.5 rounded">Chapitres 4 à 10</span>
+                    </div>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-xs">
+                      <div className="p-3 rounded-lg bg-emerald-50/70 border border-emerald-200/80 space-y-1">
+                        <div className="flex items-center justify-between font-bold text-emerald-800">
+                          <span>1. Plan (§4 – §6)</span>
+                          <Check className="w-3.5 h-3.5 stroke-[3]" />
+                        </div>
+                        <p className="font-semibold text-slate-900 text-[11px]">Contexte, politique &amp; UES</p>
+                        <p className="text-[11px] text-slate-600 leading-snug">Revue énergétique, IPÉ, SER et plan d'actions §6.2.</p>
+                      </div>
+
+                      <div className="p-3 rounded-lg bg-blue-50/70 border border-blue-200/80 space-y-1">
+                        <div className="flex items-center justify-between font-bold text-blue-800">
+                          <span>2. Do (§7 – §8)</span>
+                          <Check className="w-3.5 h-3.5 stroke-[3]" />
+                        </div>
+                        <p className="font-semibold text-slate-900 text-[11px]">Ressources &amp; maîtrise</p>
+                        <p className="text-[11px] text-slate-600 leading-snug">Compétences, plan de comptage et maîtrise opérationnelle.</p>
+                      </div>
+
+                      <div className="p-3 rounded-lg bg-purple-50/70 border border-purple-200/80 space-y-1">
+                        <div className="flex items-center justify-between font-bold text-purple-800">
+                          <span>3. Check (§9)</span>
+                          <span className="text-[10px] font-mono bg-white px-1.5 py-0.5 rounded border border-purple-200">Suivi</span>
+                        </div>
+                        <p className="font-semibold text-slate-900 text-[11px]">Surveillance &amp; audit interne</p>
+                        <p className="text-[11px] text-slate-600 leading-snug">Évaluation IPÉ/SER et programme d'audits internes.</p>
+                      </div>
+
+                      <div className="p-3 rounded-lg bg-amber-50/70 border border-amber-200/80 space-y-1">
+                        <div className="flex items-center justify-between font-bold text-amber-800">
+                          <span>4. Act (§10)</span>
+                          <span className="text-[10px] font-mono bg-white px-1.5 py-0.5 rounded border border-amber-200">Continu</span>
+                        </div>
+                        <p className="font-semibold text-slate-900 text-[11px]">Amélioration &amp; revue</p>
+                        <p className="text-[11px] text-slate-600 leading-snug">Traitement des non-conformités et actions correctives.</p>
+                      </div>
+                    </div>
                   </div>
-                  <div className="space-y-2 text-xs">
-                    <div className="p-2.5 rounded-lg bg-slate-50 border border-slate-200 flex justify-between items-center">
-                      <span className="text-slate-700 font-medium">UES 1 : Fours Traitement Thermique</span>
-                      <span className="font-bold text-emerald-700">43.8% conso usine</span>
+
+                  <div className="bg-white border border-slate-200 rounded-xl p-4 space-y-2.5 shadow-xs">
+                    <div className="text-xs font-bold text-slate-900 flex items-center justify-between">
+                      <span>Répartition des UES identifiés</span>
+                      <span className="text-[10px] text-emerald-700 font-mono font-semibold">Conforme §6.3</span>
                     </div>
-                    <div className="p-2.5 rounded-lg bg-slate-50 border border-slate-200 flex justify-between items-center">
-                      <span className="text-slate-700 font-medium">UES 2 : Centrale Air Comprimé</span>
-                      <span className="font-bold text-emerald-700">14.8% conso usine</span>
-                    </div>
-                    <div className="p-2.5 rounded-lg bg-slate-50 border border-slate-200 flex justify-between items-center">
-                      <span className="text-slate-700 font-medium">UES 3 : Groupe Froid & Pompes</span>
-                      <span className="font-bold text-emerald-700">11.2% conso usine</span>
+                    <div className="space-y-2 text-[11px]">
+                      <div className="space-y-1">
+                        <div className="flex justify-between">
+                          <span className="text-slate-700 font-medium">UES 1 : Fours traitement thermique</span>
+                          <span className="font-bold text-emerald-700 tabular-nums">43,8 %</span>
+                        </div>
+                        <div className="w-full h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                          <div className="h-full bg-emerald-600 rounded-full w-[44%]" />
+                        </div>
+                      </div>
+                      <div className="space-y-1">
+                        <div className="flex justify-between">
+                          <span className="text-slate-700 font-medium">UES 2 : Centrale air comprimé</span>
+                          <span className="font-bold text-blue-700 tabular-nums">14,8 %</span>
+                        </div>
+                        <div className="w-full h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                          <div className="h-full bg-blue-600 rounded-full w-[15%]" />
+                        </div>
+                      </div>
+                      <div className="space-y-1">
+                        <div className="flex justify-between">
+                          <span className="text-slate-700 font-medium">UES 3 : Groupe froid &amp; pompes</span>
+                          <span className="font-bold text-amber-700 tabular-nums">11,2 %</span>
+                        </div>
+                        <div className="w-full h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                          <div className="h-full bg-amber-500 rounded-full w-[11%]" />
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -855,7 +704,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                 <div className="space-y-4">
                   <div className="inline-flex items-center gap-2 text-xs font-bold text-blue-700">
                     <Activity className="w-4 h-4" />
-                    <span>PILIER 2 : SUPERVISION TEMPS RÉEL & COURBES DE CHARGE</span>
+                    <span>Pilier 2 · Supervision temps réel &amp; courbes de charge</span>
                   </div>
                   <h3 className="text-xl sm:text-2xl font-semibold tracking-tight text-slate-900">
                     Restitution multisources unifiée et superposition SER vs réel
@@ -866,11 +715,11 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                   <ul className="space-y-2 text-xs text-slate-700">
                     <li className="flex items-start gap-2">
                       <Check className="w-4 h-4 text-blue-600 shrink-0 mt-0.5" />
-                      <span><strong>Multi-Fluides unifiés :</strong> Électricité générale, gaz naturel de chauffe, débit d'air comprimé, eau glacée.</span>
+                      <span><strong>Multi-fluides unifiés :</strong> Électricité générale, gaz naturel de chauffe, débit d'air comprimé, eau glacée.</span>
                     </li>
                     <li className="flex items-start gap-2">
                       <Check className="w-4 h-4 text-blue-600 shrink-0 mt-0.5" />
-                      <span><strong>Cartographie & Sous-Comptage :</strong> Arborescence des compteurs généraux aux départs machines par atelier.</span>
+                      <span><strong>Cartographie &amp; sous-comptage :</strong> Arborescence des compteurs généraux aux départs machines par atelier.</span>
                     </li>
                     <li className="flex items-start gap-2">
                       <Check className="w-4 h-4 text-blue-600 shrink-0 mt-0.5" />
@@ -878,22 +727,89 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                     </li>
                   </ul>
                 </div>
-                <div className="bg-white border border-slate-200 rounded-xl p-5 space-y-3 shadow-xs">
-                  <div className="text-xs font-bold text-slate-900 flex items-center justify-between border-b border-slate-100 pb-2">
-                    <span>Superposition Énergétique Actuelle</span>
-                    <span className="text-[10px] text-blue-700 font-mono font-bold">10 min pas de temps</span>
+
+                {/* Graphique Courbe de charge SER vs Réel */}
+                <div className="bg-white border border-slate-200 rounded-xl p-4 sm:p-5 space-y-4 shadow-xs">
+                  <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 pb-3">
+                    <div>
+                      <div className="text-xs font-bold text-slate-900">Courbe de charge — Réel vs SER</div>
+                      <div className="text-[11px] text-slate-500">Superposition journalière au pas 10 min</div>
+                    </div>
+                    <div className="flex items-center gap-3 text-[11px] font-medium">
+                      <span className="flex items-center gap-1.5 text-slate-500">
+                        <span className="w-3 h-0.5 border-t-2 border-dashed border-slate-400"></span>
+                        SER référence
+                      </span>
+                      <span className="flex items-center gap-1.5 text-emerald-700 font-semibold">
+                        <span className="w-3 h-0.5 bg-emerald-600 rounded-full"></span>
+                        Conso réelle
+                      </span>
+                    </div>
                   </div>
-                  <div className="p-3 bg-slate-50 rounded-lg text-xs space-y-2">
-                    <div className="flex justify-between">
-                      <span className="text-slate-600">Écart mesuré vs SER :</span>
-                      <span className="text-emerald-700 font-bold">-214 kWh (-7.5%)</span>
+
+                  {/* Mini KPIs au-dessus du graphique */}
+                  <div className="grid grid-cols-2 gap-2.5 text-xs">
+                    <div className="p-2.5 rounded-lg bg-emerald-50/70 border border-emerald-200/80">
+                      <div className="text-[10px] text-slate-500 font-medium">Écart mesuré vs SER</div>
+                      <div className="font-bold text-emerald-700 flex items-center gap-1 mt-0.5 tabular-nums">
+                        <TrendingDown className="w-3.5 h-3.5" />
+                        <span>-214 kWh (-7,5 %)</span>
+                      </div>
                     </div>
-                    <div className="flex justify-between">
-                      <span className="text-slate-600">Ratio IPÉ moyen de la journée :</span>
-                      <span className="text-slate-900 font-mono font-semibold">0.84 kWh / kg produit</span>
+                    <div className="p-2.5 rounded-lg bg-slate-50 border border-slate-200">
+                      <div className="text-[10px] text-slate-500 font-medium">Ratio IPÉ moyen</div>
+                      <div className="font-bold text-slate-900 font-mono mt-0.5 tabular-nums">0,84 kWh / kg</div>
                     </div>
-                    <div className="w-full bg-slate-200 h-2 rounded-full overflow-hidden mt-2">
-                      <div className="bg-emerald-600 h-full w-[85%] rounded-full"></div>
+                  </div>
+
+                  {/* Graphique SVG Courbe de Charge */}
+                  <div>
+                    <div className="h-36 w-full">
+                      <svg viewBox="0 0 600 140" className="w-full h-full overflow-visible">
+                        <defs>
+                          <linearGradient id="pillarLoadCurveGrad" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="0%" stopColor="#10B981" stopOpacity="0.25" />
+                            <stop offset="100%" stopColor="#10B981" stopOpacity="0.0" />
+                          </linearGradient>
+                        </defs>
+                        <line x1="0" y1="30" x2="600" y2="30" stroke="#E2E8F0" strokeDasharray="3 3" />
+                        <line x1="0" y1="70" x2="600" y2="70" stroke="#E2E8F0" strokeDasharray="3 3" />
+                        <line x1="0" y1="110" x2="600" y2="110" stroke="#E2E8F0" strokeDasharray="3 3" />
+
+                        {/* Courbe SER (pointillés gris) */}
+                        <path
+                          d="M 0 100 Q 110 60 225 66 T 375 45 T 600 58"
+                          fill="none"
+                          stroke="#94A3B8"
+                          strokeWidth="2"
+                          strokeDasharray="4 4"
+                        />
+
+                        {/* Zone remplie réelle */}
+                        <path
+                          d="M 0 112 Q 110 74 225 80 T 375 60 T 600 72 L 600 140 L 0 140 Z"
+                          fill="url(#pillarLoadCurveGrad)"
+                        />
+
+                        {/* Courbe réelle (vert émeraude) */}
+                        <path
+                          d="M 0 112 Q 110 74 225 80 T 375 60 T 600 72"
+                          fill="none"
+                          stroke="#059669"
+                          strokeWidth="2.5"
+                        />
+
+                        {/* Marqueur point courant */}
+                        <circle cx="360" cy="62" r="4" fill="#059669" />
+                        <circle cx="360" cy="62" r="9" fill="#10B981" opacity="0.35" className="animate-ping" />
+                      </svg>
+                    </div>
+                    <div className="flex items-center justify-between text-[10px] text-slate-400 font-mono border-t border-slate-100 pt-2">
+                      <span>00:00 (Nuit)</span>
+                      <span>06:00 (Poste 1)</span>
+                      <span>12:00 (Creux)</span>
+                      <span>18:00 (Poste 2)</span>
+                      <span>23:59</span>
                     </div>
                   </div>
                 </div>
@@ -905,13 +821,13 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                 <div className="space-y-4">
                   <div className="inline-flex items-center gap-2 text-xs font-bold text-amber-700">
                     <Bell className="w-4 h-4" />
-                    <span>PILIER 3 : CENTRE D'ALERTES AUTOMATIQUE</span>
+                    <span>Pilier 3 · Centre d'alertes automatique</span>
                   </div>
                   <h3 className="text-xl sm:text-2xl font-semibold tracking-tight text-slate-900">
                     Détection proactive des dérives de talons et des surconsommations
                   </h3>
                   <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
-                    Ne laissez plus des compresseurs tourner à vide pendant les week-ends ou des thermostats défaillants gaspiller des milliers d'euros.
+                    Ne laissez plus des compresseurs tourner à vide pendant les week-ends ou des équipements défaillants gaspiller des milliers d'euros.
                   </p>
                   <ul className="space-y-2 text-xs text-slate-700">
                     <li className="flex items-start gap-2">
@@ -924,22 +840,39 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                     </li>
                     <li className="flex items-start gap-2">
                       <Check className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
-                      <span><strong>Acquittement & Traçabilité :</strong> Saisie de la cause de l'anomalie par l'équipe terrain pour justification d'audit.</span>
+                      <span><strong>Acquittement &amp; traçabilité :</strong> Saisie de la cause de l'anomalie par l'équipe terrain pour justification d'audit.</span>
                     </li>
                   </ul>
                 </div>
-                <div className="bg-white border border-slate-200 rounded-xl p-5 space-y-2.5 shadow-xs">
+
+                {/* Visuel Seuil dépassé + Alerte */}
+                <div className="bg-white border border-slate-200 rounded-xl p-4 sm:p-5 space-y-3 shadow-xs">
                   <div className="text-xs font-bold text-slate-900 flex items-center justify-between border-b border-slate-100 pb-2">
-                    <span>Journal des Écarts & Alertes</span>
-                    <span className="text-[10px] text-amber-700 font-mono font-bold">1 active</span>
+                    <span>Détection de dépassement de seuil</span>
+                    <span className="text-[10px] text-rose-700 font-mono font-bold bg-rose-50 px-2 py-0.5 rounded">1 alerte active</span>
+                  </div>
+                  <div className="h-24 w-full">
+                    <svg viewBox="0 0 500 90" className="w-full h-full overflow-visible">
+                      {/* Seuil max talon */}
+                      <line x1="0" y1="45" x2="500" y2="45" stroke="#E11D48" strokeWidth="1.5" strokeDasharray="4 4" />
+                      <text x="4" y="40" fill="#E11D48" fontSize="10" fontFamily="monospace">Seuil talon : 35 kW</text>
+                      {/* Courbe puissance avec pic */}
+                      <path
+                        d="M 0 65 L 120 63 L 180 62 L 240 20 L 320 22 L 370 60 L 500 62"
+                        fill="none"
+                        stroke="#F59E0B"
+                        strokeWidth="2.5"
+                      />
+                      <circle cx="280" cy="21" r="4" fill="#E11D48" />
+                    </svg>
                   </div>
                   <div className="p-3 bg-rose-50 border border-rose-200 rounded-lg text-xs space-y-1">
                     <div className="flex items-center justify-between font-bold text-rose-700">
-                      <span>Dérive Talon Air Comprimé Week-End</span>
+                      <span>Dérive talon air comprimé week-end</span>
                       <span className="text-[10px] font-mono">Samedi 03:15</span>
                     </div>
                     <p className="text-[11px] text-slate-600">
-                      Puissance mesurée : 68 kW (Seuil max talon : 35 kW). Fuite probable réseau Bâtiment C.
+                      Puissance mesurée : <strong>68 kW</strong> (seuil max : 35 kW). Fuite probable réseau Bâtiment C.
                     </p>
                   </div>
                 </div>
@@ -951,7 +884,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                 <div className="space-y-4">
                   <div className="inline-flex items-center gap-2 text-xs font-bold text-purple-700">
                     <Database className="w-4 h-4" />
-                    <span>PILIER 4 : INTÉGRATION UNIVERSELLE</span>
+                    <span>Pilier 4 · Intégration universelle</span>
                   </div>
                   <h3 className="text-xl sm:text-2xl font-semibold tracking-tight text-slate-900">
                     Connexion directe aux automates ou simple import CSV sans bloquer votre DSI
@@ -962,11 +895,11 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                   <ul className="space-y-2 text-xs text-slate-700">
                     <li className="flex items-start gap-2">
                       <Check className="w-4 h-4 text-purple-600 shrink-0 mt-0.5" />
-                      <span><strong>Protocoles Industriels standards :</strong> Modbus TCP/RTU, MQTT, passerelles IoT cellulaires 4G autonomes.</span>
+                      <span><strong>Protocoles industriels standards :</strong> Modbus TCP/RTU, MQTT, passerelles IoT cellulaires 4G autonomes.</span>
                     </li>
                     <li className="flex items-start gap-2">
                       <Check className="w-4 h-4 text-purple-600 shrink-0 mt-0.5" />
-                      <span><strong>Import Manuel CSV / Excel :</strong> Glisser-déposer universel pour intégrer des historiques Enedis / GRDF ou des exports de supervision.</span>
+                      <span><strong>Import manuel CSV / Excel :</strong> Glisser-déposer universel pour intégrer des historiques Enedis / GRDF ou des exports de supervision.</span>
                     </li>
                     <li className="flex items-start gap-2">
                       <Check className="w-4 h-4 text-purple-600 shrink-0 mt-0.5" />
@@ -974,10 +907,12 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                     </li>
                   </ul>
                 </div>
-                <div className="bg-white border border-slate-200 rounded-xl p-5 space-y-3 shadow-xs">
+
+                {/* Visuel architecture d'ingestion */}
+                <div className="bg-white border border-slate-200 rounded-xl p-4 sm:p-5 space-y-3 shadow-xs">
                   <div className="text-xs font-bold text-slate-900 flex items-center justify-between border-b border-slate-100 pb-2">
-                    <span>Sources d'Ingestion Supportées</span>
-                    <span className="text-[10px] text-emerald-700 font-mono font-bold">100% Plug & Play</span>
+                    <span>Architecture de collecte des flux</span>
+                    <span className="text-[10px] text-emerald-700 font-mono font-semibold bg-emerald-50 px-2 py-0.5 rounded">Plug &amp; Play</span>
                   </div>
                   <div className="grid grid-cols-2 gap-2 text-xs">
                     <div className="p-2.5 bg-slate-50 border border-slate-200 rounded-lg text-slate-700 font-medium">
@@ -992,6 +927,13 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                     <div className="p-2.5 bg-slate-50 border border-slate-200 rounded-lg text-slate-700 font-medium">
                       🔄 Courbes Enedis / GRDF
                     </div>
+                  </div>
+                  <div className="flex items-center justify-center text-slate-400 text-[11px] font-mono">
+                    ↓ Normalisation &amp; contrôle qualité automatique ↓
+                  </div>
+                  <div className="p-3 rounded-lg bg-emerald-50 border border-emerald-200 flex items-center justify-between text-xs">
+                    <span className="font-semibold text-emerald-950">Moteur UniSme (IPÉ, SER, Alertes)</span>
+                    <span className="text-[10px] font-mono font-bold text-emerald-700">Temps réel</span>
                   </div>
                 </div>
               </div>
@@ -1499,6 +1441,11 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                       />
                     </div>
                   </div>
+                </div>
+
+                {/* Message d'aiguillage vers la démo en haut de page */}
+                <div className="px-3.5 py-2.5 rounded-xl bg-emerald-50/60 border border-emerald-200/70 text-xs text-slate-600 leading-relaxed">
+                  💡 <span className="italic">Vous souhaitez tester l'outil immédiatement ? Vous pouvez cliquer directement sur le bouton <button type="button" onClick={activeDemoUser ? onEnterDirectDemo : onOpenSandboxModal} className="font-semibold text-emerald-700 hover:text-emerald-800 underline cursor-pointer">'Tester la version démo'</button> en haut de page.</span>
                 </div>
 
                 {/* 2. Objet de votre demande (Tags cliquables) */}
